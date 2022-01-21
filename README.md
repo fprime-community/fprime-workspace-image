@@ -6,7 +6,7 @@ This repo provides an [Ansible](https://www.ansible.com/) based template for bui
 
 ## How to Use this Repo
 
-1. Clone this repo, giving the new repo a descriptive name for the workspace image to be created
+1. Fork this repo, giving the new repo a descriptive name for the workspace image to be created
 1. Edit the `docker-compose.yml` file and update the `image:` entry to reflect the workspace image to be created
 1. Add Ansible Galaxy packages to the `requirements.yaml` file as needed for the playbook
 1. Add new Ansible plays to the `playbook.yaml` file to implement the workspace
