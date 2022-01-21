@@ -11,4 +11,5 @@ services:
     shm_size: '512m'
     stdin_open: true # docker run -i
     tty: true        # docker run -t
+    network_mode: bridge
 ...
