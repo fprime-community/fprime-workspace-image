@@ -2,7 +2,7 @@
 version: "3.7"
 services:
   kasm:
-    build: ./Dockerfile
+    build: .
     image: kasm-core-focal-template
     ports:
       - "6901:6901"
