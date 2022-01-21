@@ -1,0 +1,14 @@
+---
+version: "3.7"
+services:
+  kasm:
+    build: ./Dockerfile
+    image: kasm-core-focal-template
+    ports:
+      - "6901:6901"
+    environment:
+      VNC_PW: password
+    shm_size: '512m'
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+...

@@ -1,0 +1,33 @@
+---
+# List of plays
+-
+  # Hosts: where our play will run and options it will run with
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  # Vars: variables that will apply to the play, on all targets 
+
+  # Tasks: the list of tasks that will be executed within 
+  #        the play, this section can also be used for 
+  #        pre and post tasks
+  tasks:
+    # from https://superuser.com/questions/1395954/ansible-playbook-to-determine-os-release
+  - name: System details
+    debug: msg="{{ item }}"
+    with_items: 
+    - "{{ ansible_distribution }}"
+    - "{{ ansible_distribution_version }}"
+    - "{{ ansible_distribution_major_version }}"
+
+  # Handlers: the list of handlers that are executed as a notify 
+  #           key from a task
+
+  # Roles: list of roles to be imported into the play
+
+# Add additional plays here (remember the list entry -)
+# Be sure to use the same hosts and connection entries above
+# addtional plays
+
+# Three dots indicate the end of a YAML document
+...

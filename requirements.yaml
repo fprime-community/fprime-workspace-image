@@ -1,0 +1,4 @@
+---
+# Add Ansible Galaxy Packages here, role_example_hello included to prevent errors in template testing
+- irixjp.role_example_hello           # https://galaxy.ansible.com/irixjp/role_example_hello
+...
