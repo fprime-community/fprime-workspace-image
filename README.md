@@ -13,3 +13,7 @@ This repo provides an [Ansible](https://www.ansible.com/) based template for bui
 1. Run `docker-compose build` to build the workspace image
 
 If you encounter Ansible errors, revise the requirements and playbook files as necessary.  Once built, the image can be pushed into the Kasm server per Kasm documentation or it can be run locally on port 6901 by running `docker-compose up`.
+
+When running locally, the workspace can be accessed at https://localhost:6901 with
+- **User:** `kasm_user`
+- **Passwordd:** `password`
