@@ -12,4 +12,8 @@ services:
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     network_mode: bridge
+    volumes:
+      - type: bind
+        source: ./kasm_user
+        target: /home/kasm-user
 ...
