@@ -19,11 +19,26 @@
     - "{{ ansible_distribution }}"
     - "{{ ansible_distribution_version }}"
     - "{{ ansible_distribution_major_version }}"
+    # Detect if we are running on a WSL2 environment
+  - name: Set wsl2_environment fact default to false
+    set_fact:
+      wsl2_environment: false
+  - name: Set wsl2_environment fact True
+    set_fact:
+      wsl2_environment: true
+    when: ansible_kernel is search("microsoft-standard-WSL2")  
+  # fix for .gnupg/ permissions when building custom images
+  - name: Add fix for .gnupg/ permissions
+    lineinfile:
+      path: "/etc/bash.bashrc"
+      line: "chmod 700 ~/.gnupg/"    
 
   # Handlers: the list of handlers that are executed as a notify 
   #           key from a task
 
   # Roles: list of roles to be imported into the play
+  roles:
+  - role: irixjp.role_example_hello
 
 # Add additional plays here (remember the list entry -)
 # Be sure to use the same hosts and connection entries above
