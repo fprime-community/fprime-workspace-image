@@ -12,9 +12,16 @@ This repo provides an [Ansible](https://www.ansible.com/) based template for bui
 1. Add Ansible Galaxy packages to the `requirements.yaml` file as needed for the playbook
 1. Add new Ansible plays to the `playbook.yaml` file to implement the workspace
 1. Replace `bg_custom.png` with a new desktop wallpaper if desired, making sure to maintain the filename `bg_custom.png` 
-1. Run `docker-compose build` to build the workspace image (see [Issue #1](https://github.com/j-simmons-phd/kasm-core-focal-template/issues/1) if you encounter an error in Step 1/15 for manual steps to correct the issue)
+1. Run `docker-compose build` to build the workspace image (see [Issue #1](https://github.com/j-simmons-phd/kasm-core-focal-template/issues/1) if you encounter an error in Step 1/15 for manual steps to correct the issue).  Note, debugging build errors is easier when you switch the docker-compose [progress mode](https://docs.docker.com/engine/reference/commandline/compose_build/#options) to plain (`docker-compose build --progress plain`)
 
-If you encounter Ansible errors, revise the requirements and playbook files as necessary.  Once built, the image can be pushed into the Kasm server per Kasm documentation or it can be run locally on port 6901 by running `docker-compose up`.
+If you encounter Ansible errors, revise the requirements and playbook files as necessary.  
+
+## Using the image locally
+
+Once built, the image can be pushed into the Kasm server per Kasm documentation or it can be run locally on port 6901 using docker-compose.
+
+- **Starting the image locally:** Run `docker-compose up -d`
+- **Stopping the image locally:** Run `docker-compose down`
 
 When running locally, the workspace can be accessed at https://localhost:6901 with
 - **User:** `kasm_user`
