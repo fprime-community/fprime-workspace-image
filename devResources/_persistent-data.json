@@ -1,0 +1,19 @@
+"HostConfig": {
+    "Binds": [
+        "/home/profiles/user@kasm.local/:/home/kasm-user:rw"
+    ],
+
+    "Mounts": [
+        {
+            "Type": "bind",
+            "Source": "/home/profiles/user@kasm.local",
+            "Destination": "/home/kasm-user",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": "rprivate"
+        }
+    ],
+
+    "Volumes": {
+        "/home/kasm-user": {}
+    },    

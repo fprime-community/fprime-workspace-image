@@ -16,6 +16,10 @@ This repo provides an [Ansible](https://www.ansible.com/) based template for bui
 
 If you encounter Ansible errors, revise the requirements and playbook files as necessary.  
 
+## Dev Resources
+
+See the `devResources` directory for instructions and templates related to installing various tools that require additional steps to properly install/execute.  Examples include Chrome and VS Code (including extensions)
+
 ## Using the image locally
 
 Once built, the image can be pushed into the Kasm server per Kasm documentation or it can be run locally on port 6901 using docker-compose.
