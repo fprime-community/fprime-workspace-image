@@ -32,6 +32,10 @@
     lineinfile:
       path: "/etc/bash.bashrc"
       line: "chmod 700 ~/.gnupg/"    
+  - name: Add custom prompt to /etc/skel/.profile
+    lineinfile:
+      path: "/etc/skel/.profile"
+      line: 'export PS1="\e[0;32m[\w]\$ \e[0m"'
 
   # Handlers: the list of handlers that are executed as a notify 
   #           key from a task
