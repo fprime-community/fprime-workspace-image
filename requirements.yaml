@@ -1,4 +1,8 @@
 ---
 # Add Ansible Galaxy Packages here, role_example_hello included to prevent errors in template testing
 - irixjp.role_example_hello           # https://galaxy.ansible.com/irixjp/role_example_hello
+- webarchitect609.google_chrome       # https://galaxy.ansible.com/webarchitect609/google_chrome
+- geerlingguy.git                     # https://galaxy.ansible.com/geerlingguy/git
+- geerlingguy.pip                     # https://galaxy.ansible.com/geerlingguy/pip
+- gantsign.visual-studio-code         # https://galaxy.ansible.com/gantsign/visual-studio-code
 ...

@@ -47,6 +47,141 @@
 # Add additional plays here (remember the list entry -)
 # Be sure to use the same hosts and connection entries above
 # addtional plays
+-
+  # install chrome, keychain, and git
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  tasks:
+  - name: Install Keychain
+    apt:
+      name: keychain
+      update_cache: yes
+
+  roles:
+    - role: webarchitect609.google_chrome
+    - role: geerlingguy.git  
+
+# -
+#   # install Python 3, based on https://phoenixnap.com/kb/how-to-install-python-3-ubuntu
+#   hosts: localhost
+#   connection: local
+#   gather_facts: yes
+
+#   tasks:
+#   - name: Install Supporting Software (with updated apt cache)
+#     apt:
+#       name: software-properties-common
+#       update_cache: yes
+#   - name: Add Deadsnakes PPA
+#     shell:
+#       cmd: add-apt-repository ppa:deadsnakes/ppa
+#       executable: /bin/bash
+#   - name: Install Python 3
+#     apt: 
+#       name: python3.10
+#       update_cache: yes 
+#   # - name: Remove python3 links to python3.8
+#   #   shell:
+#   #     cmd: rm /usr/bin/python3 
+#   #     executable: /bin/bash
+#   - name: Update OS to point python to python3.10
+#     shell:
+#       cmd: update-alternatives --install /usr/local/bin/python python /usr/bin/python3.10 100 
+#       executable: /bin/bash
+#   # - name: Update OS to point python3 to python3.10
+#   #   shell:
+#   #     cmd: update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 100 
+#   #     executable: /bin/bash    
+
+-
+  # install Python packages with pip
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  tasks:
+  - name: Update OS to point python to python3
+    apt:
+      name: python-is-python3
+      update_cache: yes
+  - name: Install python packages with pip
+    pip:
+      name:
+        - jupyterlab
+        - notebook
+        - voila
+        - pint
+
+  roles:
+    - role: geerlingguy.pip
+
+- 
+  # install sudo for the vs-code role below 
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Install Sudo
+    apt:
+      name: sudo
+      update_cache: yes
+  - name: Preserve DONT_PROMPT_WSL_INSTALL in sudoers
+    lineinfile:
+      path: "/etc/sudoers"
+      line: "Defaults        env_keep += \"DONT_PROMPT_WSL_INSTALL\""
+    when: wsl2_environment
+
+-
+# add dev user to give vs code somewhere to install extensions
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Add dev user
+    user:
+      name: dev
+      uid: 1001
+
+-
+  # install the remainder of the tools
+  hosts: localhost
+  connection: local
+  environment: 
+    DONT_PROMPT_WSL_INSTALL: 1
+  roles:
+    - role: gantsign.visual-studio-code
+      users:
+        - username: "dev"
+          visual_studio_code_extensions:
+            - ms-python.python
+          visual_studio_code_settings_overwrite: yes
+          visual_studio_code_settings: {
+            "extensions.ignoreRecommendations": true,
+            "update.mode": "none",
+            "extensions.autoUpdate": false,
+            "extensions.autoCheckUpdates": false,
+            "terminal.integrated.profiles.linux": {
+              "bash (login)": {
+                "path": "bash",
+                "args": ["-l"]
+                }
+              },
+            "terminal.integrated.defaultProfile.linux": "bash (login)" 
+          }  
+
+-
+  # Copy VS Code changes to kasm-default-profile and lean up (remove) dev user now that vs code is installed
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Copy VS Code changes to kasm-default-profile
+    shell: 
+      cmd: cp -r /home/dev/.config/Code/ /home/kasm-default-profile/.config/Code/ && cp -r /home/dev/.vscode/ /home/kasm-default-profile/.vscode/
+  - name: Remove dev user
+    user:
+      name: dev
+      state: absent
+      remove: yes 
 
 # Three dots indicate the end of a YAML document
 ...

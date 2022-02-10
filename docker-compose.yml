@@ -3,7 +3,7 @@ version: "3.7"
 services:
   kasm:
     build: .
-    image: kasm-core-focal-template
+    image: kasm-python-workspace
     ports:
       - "6901:6901"
     environment:
@@ -16,4 +16,8 @@ services:
       - type: bind
         source: ./kasm_user
         target: /home/kasm-user
+
+# to get Chrome working per https://stackoverflow.com/a/64460373
+    security_opt:
+      - seccomp=./chrome.json
 ...
