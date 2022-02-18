@@ -12,7 +12,8 @@ This repo provides an [Ansible](https://www.ansible.com/) based template for bui
 1. Add Ansible Galaxy packages to the `requirements.yaml` file as needed for the playbook
 1. Add new Ansible plays to the `playbook.yaml` file to implement the workspace
 1. Replace `bg_custom.png` with a new desktop wallpaper if desired, making sure to maintain the filename `bg_custom.png` 
-1. Run `docker-compose build` to build the workspace image (see [Issue #1](https://github.com/j-simmons-phd/kasm-core-focal-template/issues/1) if you encounter an error in Step 1/15 for manual steps to correct the issue).  Note, debugging build errors is easier when you switch the docker-compose [progress mode](https://docs.docker.com/engine/reference/commandline/compose_build/#options) to plain (`docker-compose build --progress plain`)
+1. Run `docker-compose build` to build the workspace image.  Note, debugging build errors is easier when you switch the docker-compose [progress mode](https://docs.docker.com/engine/reference/commandline/compose_build/#options) to plain (`docker-compose build --progress plain`).  Alternatively, you can pull the published version (when available) by calling `docker-compose pull`.
+1. Be sure to add a repository secret named `GHCR_AUTH_TOKEN` containing a valid token value with packages write access to properly enable GitHub CI.
 
 If you encounter Ansible errors, revise the requirements and playbook files as necessary.  
 

@@ -3,7 +3,7 @@ version: "3.7"
 services:
   kasm:
     build: .
-    image: kasm-core-focal-template
+    image: ghcr.io/j-simmons-phd/kasm-core-focal-template:main
     ports:
       - "6901:6901"
     environment:
