@@ -49,52 +49,57 @@
 # Be sure to use the same hosts and connection entries above
 # addtional plays
 -
-  # install chrome, keychain, and git
+  # install chrome
   hosts: localhost
   connection: local
   gather_facts: yes
 
-  tasks:
-  - name: Install Keychain
-    apt:
-      name: keychain
-      update_cache: yes
-
   roles:
     - role: webarchitect609.google_chrome
-    - role: geerlingguy.git  
 
-# -
-#   # install Python 3, based on https://phoenixnap.com/kb/how-to-install-python-3-ubuntu
-#   hosts: localhost
-#   connection: local
-#   gather_facts: yes
+-
+  # install keychain and git
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags: install_git_keychain
 
-#   tasks:
-#   - name: Install Supporting Software (with updated apt cache)
-#     apt:
-#       name: software-properties-common
-#       update_cache: yes
-#   - name: Add Deadsnakes PPA
-#     shell:
-#       cmd: add-apt-repository ppa:deadsnakes/ppa
-#       executable: /bin/bash
-#   - name: Install Python 3
-#     apt: 
-#       name: python3.10
-#       update_cache: yes 
-#   # - name: Remove python3 links to python3.8
-#   #   shell:
-#   #     cmd: rm /usr/bin/python3 
-#   #     executable: /bin/bash
-#   - name: Update OS to point python to python3.10
-#     shell:
-#       cmd: update-alternatives --install /usr/local/bin/python python /usr/bin/python3.10 100 
-#       executable: /bin/bash
-#   # - name: Update OS to point python3 to python3.10
-#   #   shell:
-#   #     cmd: update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 100 
-#   #     executable: /bin/bash    
+  vars:
+    git_version: "2.35.1"
+    git_version_to_install: "1:{{ git_version }}-0ppa1~ubuntu20.04.1"
+    keychain_version: "2.8.5"
+    keychain_version_to_install: "{{ keychain_version }}-1"
+    keychain_version_expected: "{{ keychain_version }}.."
+
+  tasks:
+  - name: Add git PPA
+    shell: add-apt-repository ppa:git-core/ppa
+  - name: Install git
+    apt:
+      name: "git={{ git_version_to_install }}"  
+  - name: Install Keychain
+    apt:
+      name: "keychain={{ keychain_version_to_install }}"
+      update_cache: yes
+  - name: Get git version
+    shell: git version | sed 's/[[:alpha:]|(|[:space:]]//g'
+    register: installed_git_version
+  - name: Get keychain version
+    shell: 
+      cmd: keychain -V 2> >(grep -i keychain) 2> >(sed 's/[[:alpha:]|(|[:space:]]//g') | fgrep '*' | sed 's/[*~://]//g'
+      executable: /bin/bash
+    register: installed_keychain_version
+  - name: Display git and keychain versions
+    debug:
+      msg: "git = {{ installed_git_version.stdout }} | keychain = {{ installed_keychain_version.stdout }}"
+  - name: Test git version
+    fail:
+      msg: "Git Version Error: Expected {{ git_version }} | Found {{ installed_git_version.stdout }}"
+    when: installed_git_version.stdout != git_version  
+  - name: Test keychain version
+    fail:
+      msg: "Keychain Version Error: Expected {{ keychain_version_expected }} | Found {{ installed_keychain_version.stdout }}"
+    when: installed_keychain_version.stdout != keychain_version_expected    
 
 -
   # install Python packages with pip
