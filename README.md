@@ -18,9 +18,8 @@ This repo provides a workspace for Mach 30 volunteers to work on Python projects
 
 ## How to Use this Repo
 
-1. Clone this repo
-1. Change directory into the cloned repo 
-1. Run `docker-compose build` to build the workspace image (see [Issue #1](https://github.com/j-simmons-phd/kasm-core-focal-template/issues/1) if you encounter an error in Step 1/15 for manual steps to correct the issue).  Note, debugging build errors is easier when you switch the docker-compose [progress mode](https://docs.docker.com/engine/reference/commandline/compose_build/#options) to plain (`docker-compose build --progress plain`)
+1. Clone this repo, giving the new repo a descriptive name for the workspace image to be created
+1. Run `docker-compose pull` to download the image or run `docker-compose build` to build the workspace image 
 
 ## Using the image locally
 

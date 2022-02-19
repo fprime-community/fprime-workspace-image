@@ -5,6 +5,7 @@
   hosts: localhost
   connection: local
   gather_facts: yes
+  tags: always
 
   # Vars: variables that will apply to the play, on all targets 
 

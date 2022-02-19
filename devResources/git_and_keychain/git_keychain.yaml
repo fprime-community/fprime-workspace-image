@@ -1,0 +1,45 @@
+# Copy this plays into your playbook to get VS Code to install properly in Kasm Image
+
+-
+  # install keychain, and git
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags: install_git_keychain
+
+  vars:
+    git_version: "2.35.1"
+    git_version_to_install: "1:{{ git_version }}-0ppa1~ubuntu20.04.1"
+    keychain_version: "2.8.5"
+    keychain_version_to_install: "{{ keychain_version }}-1"
+    keychain_version_expected: "{{ keychain_version }}.."
+
+  tasks:
+  - name: Add git PPA
+    shell: add-apt-repository ppa:git-core/ppa
+  - name: Install git
+    apt:
+      name: "git={{ git_version_to_install }}"  
+  - name: Install Keychain
+    apt:
+      name: "keychain={{ keychain_version_to_install }}"
+      update_cache: yes
+  - name: Get git version
+    shell: git version | sed 's/[[:alpha:]|(|[:space:]]//g'
+    register: installed_git_version
+  - name: Get keychain version
+    shell: 
+      cmd: keychain -V 2> >(grep -i keychain) 2> >(sed 's/[[:alpha:]|(|[:space:]]//g') | fgrep '*' | sed 's/[*~://]//g'
+      executable: /bin/bash
+    register: installed_keychain_version
+  - name: Display git and keychain versions
+    debug:
+      msg: "git = {{ installed_git_version.stdout }} | keychain = {{ installed_keychain_version.stdout }}"
+  - name: Test git version
+    fail:
+      msg: "Git Version Error: Expected {{ git_version }} | Found {{ installed_git_version.stdout }}"
+    when: installed_git_version.stdout != git_version  
+  - name: Test keychain version
+    fail:
+      msg: "Keychain Version Error: Expected {{ keychain_version_expected }} | Found {{ installed_keychain_version.stdout }}"
+    when: installed_keychain_version.stdout != keychain_version_expected    
