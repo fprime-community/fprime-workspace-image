@@ -3,7 +3,7 @@ version: "3.7"
 services:
   kasm:
     build: .
-    image: ghcr.io/Mach30/kasm-python-workspace:main
+    image: ghcr.io/mach30/kasm-python-workspace:main
     ports:
       - "6901:6901"
     environment:
