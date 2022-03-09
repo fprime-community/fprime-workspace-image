@@ -16,8 +16,6 @@ services:
       - type: bind
         source: ./kasm_user
         target: /home/kasm-user
-
-# to get Chrome working per https://stackoverflow.com/a/64460373
     security_opt:
-      - seccomp=./chrome.json
+      - seccomp=unconfined
 ...
