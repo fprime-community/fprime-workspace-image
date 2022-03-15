@@ -119,6 +119,8 @@
         - notebook
         - voila
         - pint
+        - fprime-tools
+        - fprime-gds
 
   roles:
     - role: geerlingguy.pip
