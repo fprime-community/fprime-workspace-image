@@ -125,6 +125,24 @@
   roles:
     - role: geerlingguy.pip
 
+-
+  # install Cross-compile toolchain for embedded Linux target
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Install gcc-arm-linux-gnueabihf with Apt
+    apt:
+      name: gcc-arm-linux-gnueabihf
+      update_cache: yes
+  - name: Install g++-arm-linux-gnueabihf with Apt
+    apt:
+      name: g++-arm-linux-gnueabihf
+      update_cache: yes
+  - name: Install gdb-multiarch with Apt
+    apt:
+      name: gdb-multiarch
+      update_cache: yes
+
 - 
   # install sudo for the vs-code role below 
   hosts: localhost
