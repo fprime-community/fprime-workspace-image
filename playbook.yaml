@@ -58,7 +58,7 @@
     - role: webarchitect609.google_chrome
 
 -
-  # install keychain and git
+  # install keychain, git, and custom .vimrc & .gitconfig
   hosts: localhost
   connection: local
   gather_facts: yes
@@ -100,6 +100,14 @@
     fail:
       msg: "Keychain Version Error: Expected {{ keychain_version_expected }} | Found {{ installed_keychain_version.stdout }}"
     when: installed_keychain_version.stdout != keychain_version_expected    
+  - name: Install @capsulecorplab .vimrc
+    get_url:
+      url: https://gist.githubusercontent.com/capsulecorplab/495058e7a57ed8adaed3c40c80d09739/raw/4a6e6f6ff92b96919be111c9cbb5a4a21ab472d2/.vimrc
+      dest: /home/kasm-default-profile/
+  - name: Install @capsulecorplab .gitconfig
+    get_url:
+      url: https://gist.githubusercontent.com/capsulecorplab/401ba2fe0857a328f2a626adbf078cc6/raw/b89a6234f0d620ff60bcfe37f95de197b8772377/.gitconfig
+      dest: /home/kasm-default-profile/
 
 -
   # install Python packages with pip
