@@ -150,6 +150,27 @@
     apt:
       name: gdb-multiarch
       update_cache: yes
+  - name: Install build-essential with Apt
+    apt:
+      name: build-essential
+      update_cache: yes
+  - name: Download cmake tarball
+    shell: wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz -O /home/kasm-default-profile/cmake-3.2.2.tar.gz
+  - name: Extract cmake source files
+    unarchive:
+      src: /home/kasm-default-profile/cmake-3.2.2.tar.gz
+      dest: /home/kasm-default-profile/
+      remote_src: yes
+      creates: /home/kasm-default-profile/cmake-3.2.2/README
+  - name: Delete cmake tarball
+    shell: rm /home/kasm-default-profile/cmake-3.2.2.tar.gz
+  - name: Build cmake
+    shell:
+      cmd: ./configure && make > /tmp/cmake_build_output.txt 2>&1 && make install
+      chdir: /home/kasm-default-profile/cmake-3.2.2/
+      executable: /bin/bash
+  - name: Delete cmake source files
+    shell: rm -rf /home/kasm-default-profile/cmake-3.2.2/
 
 - 
   # install sudo for the vs-code role below 
