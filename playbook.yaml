@@ -58,14 +58,14 @@
     - role: webarchitect609.google_chrome
 
 -
-  # install keychain, git, and custom .vimrc & .gitconfig
+  # install keychain, git, and @capsulecorplab .vimrc and .gitconfig
   hosts: localhost
   connection: local
   gather_facts: yes
-  tags: install_git_keychain
+  tags: install_utilities
 
   vars:
-    git_version: "2.35.1"
+    git_version: "2.36.0"
     git_version_to_install: "1:{{ git_version }}-0ppa1~ubuntu20.04.1"
     keychain_version: "2.8.5"
     keychain_version_to_install: "{{ keychain_version }}-1"
@@ -99,7 +99,7 @@
   - name: Test keychain version
     fail:
       msg: "Keychain Version Error: Expected {{ keychain_version_expected }} | Found {{ installed_keychain_version.stdout }}"
-    when: installed_keychain_version.stdout != keychain_version_expected    
+    when: installed_keychain_version.stdout != keychain_version_expected
   - name: Install @capsulecorplab .vimrc
     get_url:
       url: https://gist.githubusercontent.com/capsulecorplab/495058e7a57ed8adaed3c40c80d09739/raw/4a6e6f6ff92b96919be111c9cbb5a4a21ab472d2/.vimrc
