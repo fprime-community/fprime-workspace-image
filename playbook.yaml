@@ -132,8 +132,8 @@
         - voila
         - pint
         - MarkupSafe<2.0.0
-        - fprime-tools
-        - fprime-gds
+        - fprime-tools==3.0.1
+        - fprime-gds==3.0.1
 
 -
   # install Cross-compile toolchain for embedded Linux target
