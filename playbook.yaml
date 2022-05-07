@@ -156,6 +156,10 @@
     apt:
       name: build-essential
       update_cache: yes
+  - name: Install libssl-dev
+    apt:
+      name: libssl-dev
+      update_cache: yes
   - name: Download cmake tarball
     shell: wget http://www.cmake.org/files/v3.23/cmake-3.23.1.tar.gz -O /home/kasm-default-profile/cmake-3.23.1.tar.gz
   - name: Extract cmake source files
