@@ -157,22 +157,22 @@
       name: build-essential
       update_cache: yes
   - name: Download cmake tarball
-    shell: wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz -O /home/kasm-default-profile/cmake-3.2.2.tar.gz
+    shell: wget http://www.cmake.org/files/v3.23/cmake-3.23.1.tar.gz -O /home/kasm-default-profile/cmake-3.23.1.tar.gz
   - name: Extract cmake source files
     unarchive:
-      src: /home/kasm-default-profile/cmake-3.2.2.tar.gz
+      src: /home/kasm-default-profile/cmake-3.23.1.tar.gz
       dest: /home/kasm-default-profile/
       remote_src: yes
-      creates: /home/kasm-default-profile/cmake-3.2.2/README
+      creates: /home/kasm-default-profile/cmake-3.23.1/README
   - name: Delete cmake tarball
-    shell: rm /home/kasm-default-profile/cmake-3.2.2.tar.gz
+    shell: rm /home/kasm-default-profile/cmake-3.23.1.tar.gz
   - name: Build cmake
     shell:
       cmd: ./configure && make > /tmp/cmake_build_output.txt 2>&1 && make install
-      chdir: /home/kasm-default-profile/cmake-3.2.2/
+      chdir: /home/kasm-default-profile/cmake-3.23.1/
       executable: /bin/bash
   - name: Delete cmake source files
-    shell: rm -rf /home/kasm-default-profile/cmake-3.2.2/
+    shell: rm -rf /home/kasm-default-profile/cmake-3.23.1/
 
 - 
   # install sudo for the vs-code role below 
