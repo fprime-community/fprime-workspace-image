@@ -36,7 +36,7 @@ NOTE: To Windows 10 users: Windows Command Prompt will not satisfy this dependen
 ## How to Use this Repo
 
 1. Clone this repo and change directory into `kasm-fprime-workspace`.
-1. Run `docker-compose pull` (Note: Linux users may need to prepend this command with `sudo`) to pull the published version of the workspace image.
+1. Run `docker-compose pull` (Note: Linux users may need to prepend this command with `sudo`) to pull the published version of the workspace image or run `docker-compose build` to build the image locally.
 
 ## Using the image locally
 
