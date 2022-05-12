@@ -93,11 +93,51 @@
     keychain_version_expected: "{{ keychain_version }}.."
 
   tasks:
-  - name: Add git PPA
-    shell: add-apt-repository ppa:git-core/ppa
-  - name: Install git
+  - name: Install dh-autoreconf
     apt:
-      name: "git={{ git_version_to_install }}"  
+      name: dh-autoreconf
+      update_cache: yes
+  - name: Install libcurl4-gnutls-dev
+    apt:
+      name: libcurl4-gnutls-dev
+      update_cache: yes
+  - name: Install libexpat1-dev
+    apt:
+      name: libexpat1-dev
+      update_cache: yes
+  - name: Install gettext
+    apt:
+      name: gettext
+      update_cache: yes
+  - name: Install libz-dev
+    apt:
+      name: libz-dev
+      update_cache: yes
+  - name: Install libssl-dev
+    apt:
+      name: libssl-dev
+      update_cache: yes
+  - name: Install install-info
+    apt:
+      name: install-info
+      update_cache: yes
+  - name: Download git (v2.36.1) tarball
+    shell: wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.36.1.tar.gz -O /home/kasm-default-profile/git-2.36.1.tar.gz
+  - name: Extract git source files
+    unarchive:
+      src: /home/kasm-default-profile/git-2.36.1.tar.gz
+      dest: /home/kasm-default-profile/
+      remote_src: yes
+      creates: /home/kasm-default-profile/git-2.36.1/README.md
+  - name: Delete git tarball
+    shell: rm /home/kasm-default-profile/git-2.36.1.tar.gz
+  - name: Build git
+    shell:
+      cmd: make configure && ./configure --prefix=/usr && make > /tmp/git_build_output.txt 2>&1 && make install
+      chdir: /home/kasm-default-profile/git-2.36.1
+      executable: /bin/bash
+  - name: Delete git source files
+    shell: rm -rf /home/kasm-default-profile/git-2.36.1
   - name: Install Keychain
     apt:
       name: "keychain={{ keychain_version_to_install }}"
@@ -129,32 +169,6 @@
     get_url:
       url: https://gist.githubusercontent.com/capsulecorplab/401ba2fe0857a328f2a626adbf078cc6/raw/b89a6234f0d620ff60bcfe37f95de197b8772377/.gitconfig
       dest: /home/kasm-default-profile/
-
--
-  # install Python packages with pip
-  hosts: localhost
-  connection: local
-  gather_facts: yes
-
-  tasks:
-  - name: Update OS to point python to python3
-    apt:
-      name: python-is-python3
-      update_cache: yes
-  - name: Install pip for python3 with Apt
-    apt:
-      name: python3-pip
-      update_cache: yes
-  - name: Install python packages with pip
-    pip:
-      name:
-        - jupyterlab
-        - notebook
-        - voila
-        - pint
-        - MarkupSafe<2.0.0
-        - fprime-tools==3.0.1
-        - fprime-gds==3.0.1
 
 -
   # install Cross-compile toolchain for embedded Linux target
@@ -198,6 +212,32 @@
       executable: /bin/bash
   - name: Delete cmake source files
     shell: rm -rf /home/kasm-default-profile/cmake-3.23.1/
+
+-
+  # install Python packages with pip
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  tasks:
+  - name: Update OS to point python to python3
+    apt:
+      name: python-is-python3
+      update_cache: yes
+  - name: Install pip for python3 with Apt
+    apt:
+      name: python3-pip
+      update_cache: yes
+  - name: Install python packages with pip
+    pip:
+      name:
+        - jupyterlab
+        - notebook
+        - voila
+        - pint
+        - MarkupSafe<2.0.0
+        - fprime-tools==3.0.1
+        - fprime-gds==3.0.1
 
 - 
   # install sudo for the vs-code role below 
