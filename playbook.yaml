@@ -171,7 +171,7 @@
       dest: /home/kasm-default-profile/
 
 -
-  # install Cross-compile toolchain for embedded Linux target
+  # install Cross-compile toolchain for ARM & embedded Linux targets
   hosts: localhost
   connection: local
   tasks:
@@ -212,6 +212,35 @@
       executable: /bin/bash
   - name: Delete cmake source files
     shell: rm -rf /home/kasm-default-profile/cmake-3.23.1/
+  - name: Download Arm toolchain tarball
+    shell: wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 -O /home/kasm-default-profile/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+  - name: Extract Arm toolchain source files
+    unarchive:
+      src: /home/kasm-default-profile/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+      dest: /opt
+      remote_src: yes
+  - name: Delete Arm toolchain tarball
+    shell: rm /home/kasm-default-profile/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+  - name: Create symbolic links for Arm toolchain binaries
+    shell: ln -s /opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-* /usr/bin/
+  - name: Download Arduino v1.8.13 tarball
+    shell: wget https://downloads.arduino.cc/arduino-1.8.13-linux64.tar.xz -O /home/kasm-default-profile/arduino-1.8.13-linux64.tar.xz
+  - name: Extract Arduino source files
+    unarchive:
+      src: /home/kasm-default-profile/arduino-1.8.13-linux64.tar.xz
+      dest: /opt
+      remote_src: yes
+  - name: Delete Arduino tarball
+    shell: rm -rf /home/kasm-default-profile/arduino-1.8.13-linux64.tar.xz
+  - name: Install Arduino
+    shell:
+      cmd: ./install.sh
+      chdir: /opt/arduino-1.8.13
+      executable: /bin/bash
+  - name: Create bin directory needed for Teensyduino cmake build system in Arduino source directory
+    shell: mkdir -p /opt/arduino-1.8.13/hardware/tools/arm/bin
+  - name: Create symbolic links needed for Teensyduino cmake build system in Arduino source directory
+    shell: ln -s /opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-* /opt/arduino-1.8.13/hardware/tools/arm/bin
 
 -
   # install Python packages with pip
