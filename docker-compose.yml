@@ -6,6 +6,7 @@ services:
     image: kasm-fprime-workspace
     ports:
       - "6901:6901"
+      - "50000:50000"
     environment:
       VNC_PW: password
     shm_size: '512m'
