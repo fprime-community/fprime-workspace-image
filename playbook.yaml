@@ -171,10 +171,30 @@
       dest: /home/kasm-default-profile/
 
 -
-  # install Cross-compile toolchain for ARM & embedded Linux targets
+  # install Cross-compile toolchain for AVR & ARM targets
   hosts: localhost
   connection: local
   tasks:
+  - name: Install gcc-avr with Apt
+    apt:
+      name: gcc-avr
+      update_cache: yes
+  - name: Install binutils-avr with Apt
+    apt:
+      name: binutils-avr
+      update_cache: yes
+  - name: Install gdb-avr with Apt
+    apt:
+      name: gdb-avr
+      update_cache: yes
+  - name: Install avr-libc with Apt
+    apt:
+      name: avr-libc
+      update_cache: yes
+  - name: Install avrdude with Apt
+    apt:
+      name: avrdude
+      update_cache: yes
   - name: Install gcc-arm-linux-gnueabihf with Apt
     apt:
       name: gcc-arm-linux-gnueabihf
