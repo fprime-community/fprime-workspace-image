@@ -175,6 +175,10 @@
   hosts: localhost
   connection: local
   tasks:
+  - name: Install Doxygen with Apt
+    apt:
+      name: doxygen
+      update_cache: yes
   - name: Install gcc-avr with Apt
     apt:
       name: gcc-avr
