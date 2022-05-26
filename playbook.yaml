@@ -265,6 +265,13 @@
     shell: mkdir -p /opt/arduino-1.8.13/hardware/tools/arm/bin
   - name: Create symbolic links needed for Teensyduino cmake build system in Arduino source directory
     shell: ln -s /opt/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-* /opt/arduino-1.8.13/hardware/tools/arm/bin
+  - name: Add USER to dialout group  # allows user to access devices on host machine, s.a., /dev/ttyACM0
+    user:
+      name: default
+      shell: /bin/bash
+      groups: "dialout"
+      state: present
+      remove: yes
 
 -
   # install Python packages with pip
