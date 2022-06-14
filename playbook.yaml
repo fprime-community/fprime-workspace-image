@@ -36,7 +36,7 @@
   - name: Add custom prompt to /etc/skel/.profile
     lineinfile:
       path: "/etc/skel/.profile"
-      line: 'export PS1="\e[0;32m[\w]\$ \e[0m"'
+      line: 'export PS1="\[\033[00;32m\][\w]\$\[\033[00m\] "'
 
   # Handlers: the list of handlers that are executed as a notify 
   #           key from a task
