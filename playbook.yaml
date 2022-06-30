@@ -235,11 +235,9 @@
         - notebook
         - voila
         - pint
-        - MarkupSafe<2.0.0
-        - jinja2==2.11.3
-        - Werkzeug==2.0.1
-        - fprime-tools==3.0.1
-        - fprime-gds==3.0.2
+  - name: Install fprime python packages & dependencies
+    pip:
+      requirements: https://raw.githubusercontent.com/nasa/fprime/v3.1.0/requirements.txt
 
 - 
   # install sudo for the vs-code role below 
