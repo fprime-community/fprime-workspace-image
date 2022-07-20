@@ -235,6 +235,7 @@
         - notebook
         - voila
         - pint
+        - setuptools
   - name: Install fprime python packages & dependencies
     pip:
       requirements: https://raw.githubusercontent.com/nasa/fprime/v3.1.0/requirements.txt
