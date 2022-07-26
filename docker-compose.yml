@@ -3,7 +3,7 @@ version: "3.7"
 services:
   kasm:
     build: .
-    image: kasm-fprime-workspace
+    image: ghcr.io/capsulecorplab/kasm-fprime-workspace:main
     ports:
       - "6901:6901"
       - "50000:50000"
