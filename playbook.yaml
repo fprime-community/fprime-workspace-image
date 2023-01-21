@@ -50,6 +50,20 @@
 # addtional plays
 
 -
+  # Install build-essential
+  hosts: localhost
+  connection: local
+  tags:
+  - install_doxygen
+  - install_cross_compile_toolchain
+
+  tasks:
+  - name: Install build-essential
+    apt:
+      name: build-essential
+      update_cache: yes
+
+-
   # install OpenJDK 11
   hosts: localhost
   connection: local
@@ -174,6 +188,10 @@
   # install Cross-compile toolchain for embedded Linux target
   hosts: localhost
   connection: local
+  tags:
+  - install_cross_compile_toolchain
+  - install_doxygen
+
   tasks:
   - name: Install gcc-arm-linux-gnueabihf with Apt
     apt:
@@ -186,10 +204,6 @@
   - name: Install gdb-multiarch with Apt
     apt:
       name: gdb-multiarch
-      update_cache: yes
-  - name: Install build-essential with Apt
-    apt:
-      name: build-essential
       update_cache: yes
   - name: Install libssl-dev
     apt:
@@ -239,6 +253,42 @@
   - name: Install fprime python packages & dependencies
     pip:
       requirements: https://raw.githubusercontent.com/nasa/fprime/v3.1.1/requirements.txt
+
+-
+  # install Doctools
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags: install_doxygen
+
+  vars:
+    doxygen_version: "1.9.6"
+
+  tasks:
+  - name: Install doxygen dependencies # as per https://stackoverflow.com/questions/50986047/doxygen-could-not-find-flex-missing-flex-executable
+    apt:
+      name: flex, bison
+      update_cache: yes
+  - name: Download Doxygen tarball
+    shell:
+      cmd: wget https://github.com/doxygen/doxygen/releases/download/Release_{{ doxygen_version | replace(".","_") }}/doxygen-{{ doxygen_version }}.src.tar.gz -O /home/kasm-default-profile/doxygen-{{ doxygen_version }}.src.tar.gz
+  - name: Extract Doxygen tarball
+    unarchive:
+      src: /home/kasm-default-profile/doxygen-{{ doxygen_version }}.src.tar.gz
+      dest: /opt
+      remote_src: yes
+      creates: /opt/doxygen-{{ doxygen_version }}/README.md
+  - name: Create Doxygen build directory
+    shell:
+      cmd: mkdir -p /opt/doxygen-{{ doxygen_version }}/build
+  - name: Delete Doxygen tarball
+    shell:
+      cmd: rm /home/kasm-default-profile/doxygen-{{ doxygen_version }}.src.tar.gz
+  - name: Build Doxygen
+    shell:
+      cmd: cmake -G "Unix Makefiles" .. && make > /tmp/doxygen_build_output.txt 2>&1 && make install
+      chdir: /opt/doxygen-{{ doxygen_version }}/build
+      executable: /bin/bash
 
 - 
   # install sudo for the vs-code role below 
