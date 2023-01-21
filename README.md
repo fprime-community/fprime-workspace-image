@@ -1,8 +1,8 @@
-# F´ Workspace (Kasm Image)
+# F´ IIAC Workspace
 
 ## Introduction
 
-This repo provides a kasm workspace for the [F´(F Prime)](http://www.cmake.org/files/v3.23) flight software and embedded systems framework, based on the [Ansible based template for KASM Ubuntu Focal Images](https://github.com/j-simmons-phd/kasm-core-focal-template) template provided by @j-simmons-phd.  The workspace is configured with the following software:
+This repo provides the source code for building an Immutable-Infrastructure-as-Code (IIAC) workspace image, using Kasm, for the [F´(F Prime)](https://github.com/nasa/fprime) flight software and embedded systems framework, based on the [Ansible based template for KASM Ubuntu Focal Images](https://github.com/j-simmons-phd/kasm-core-focal-template) template provided by @j-simmons-phd.  The workspace is configured with the following software:
 
 - Cross Compile Toolchain for embedded Linux
   - gcc-arm-linux-gnueabihf
