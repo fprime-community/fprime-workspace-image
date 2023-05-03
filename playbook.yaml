@@ -252,7 +252,7 @@
         - setuptools
   - name: Install fprime python packages & dependencies
     pip:
-      requirements: https://raw.githubusercontent.com/nasa/fprime/v3.1.1/requirements.txt
+      requirements: https://raw.githubusercontent.com/nasa/fprime/v3.2.0/requirements.txt
 
 -
   # install Doctools
