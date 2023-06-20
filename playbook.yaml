@@ -251,7 +251,7 @@
       cmd: mkdir -p /home/kasm-default-profile/opencv-{{ opencv_version }}/build
   - name: Build OpenCV
     shell:
-      cmd: cmake -D CMAKE_BUILD_TYPE=RELEASE -DCMAKE_TOOLCHAIN_FILE=/home/kasm-default-profile/fprime-system-reference/fprime/cmake/toolchain/raspberrypi.cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=ON -DBUILD_DOCS=OFF -DWITH_V4L=ON -DWITH_LIBV4L=ON -DCMAKE_INSTALL_PREFIX=opt/ -DOpenCV_DIR=/Payload/build/ -DBUILD_SHARED_LIBS=OFF ../opencv/ && make > /tmp/opencv_build_output.txt 2>&1
+      cmd: cmake -D CMAKE_BUILD_TYPE=RELEASE -DCMAKE_TOOLCHAIN_FILE=/home/kasm-default-profile/fprime-system-reference/fprime/cmake/toolchain/raspberrypi.cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=ON -DBUILD_DOCS=OFF -DWITH_V4L=ON -DWITH_LIBV4L=ON -DCMAKE_INSTALL_PREFIX=opt/ -DOpenCV_DIR=/Payload/build/ -DBUILD_SHARED_LIBS=OFF .. && make > /tmp/opencv_build_output.txt 2>&1
       chdir: /home/kasm-default-profile/opencv-{{ opencv_version }}/build
       executable: /bin/bash
 
