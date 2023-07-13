@@ -16,8 +16,8 @@ RUN apt update && apt -y install software-properties-common && add-apt-repositor
 COPY ./requirements.yaml ./playbook.yaml ./
 RUN ansible-galaxy install -r requirements.yaml && ansible-playbook -i,localhost playbook.yaml --tags "all" && rm -f ./*.yaml
 
-# Custom Desktop Background - replace bg_custom.png on disk with your own background image
-COPY ./bg_custom.png /usr/share/extra/backgrounds/bg_default.png
+# Custom Desktop Background - replace ingenuity_helicopter_on_mars.png on disk with your own background image
+COPY ./ingenuity_helicopter_on_mars.png /usr/share/extra/backgrounds/bg_default.png
 
 # Create .profile and set XFCE terminal to use it
 RUN cp /etc/skel/.profile $HOME/.profile && mkdir $HOME/.config/xfce4/terminal/
