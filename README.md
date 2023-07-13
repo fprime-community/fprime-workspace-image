@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repo provides the source code for building an Immutable-Infrastructure-as-Code (IIAC) workspace image, using Kasm, for the [F´(F Prime)](https://github.com/nasa/fprime) flight software and embedded systems framework, based on the [Ansible based template for KASM Ubuntu Focal Images](https://github.com/j-simmons-phd/kasm-core-focal-template) template provided by @j-simmons-phd.  The workspace is configured with the following software:
+This repo provides the source code for building an Immutable-Infrastructure-as-Code (IIAC) workspace image, using Kasm, for the [F´(F Prime)](https://github.com/nasa/fprime) flight software and embedded systems framework, based on an Ansible template for [KASM Ubuntu Jammy](https://hub.docker.com/r/kasmweb/core-ubuntu-jammy) images.  The workspace is configured with the following software:
 
 - Cross Compile Toolchain for embedded Linux
   - gcc-arm-linux-gnueabihf
@@ -14,7 +14,7 @@ This repo provides the source code for building an Immutable-Infrastructure-as-C
 - git cli
 - [Keychain](https://www.funtoo.org/Keychain)
 - Chrome
-- Python 3.8.x (part of the image template) with the following packages (not part of the image template)
+- Python 3.10 (part of the image template) with the following packages (not part of the image template)
     - pip
     - [fprime-tools](https://github.com/fprime-community/fprime-tools)
     - [fprime-gds](https://github.com/fprime-community/fprime-gds)

@@ -100,67 +100,35 @@
   tags: install_utilities
 
   vars:
-    git_version: "2.36.1"
-    git_version_to_install: "1:{{ git_version }}-0ppa1~ubuntu20.04.1"
+    git_version: "2.41.0"
+    git_version_to_install: "1:{{ git_version }}-0ppa1~ubuntu22.04.1"
     keychain_version: "2.8.5"
-    keychain_version_to_install: "{{ keychain_version }}-1"
+    keychain_version_to_install: "{{ keychain_version }}-2"
     keychain_version_expected: "{{ keychain_version }}.."
 
   tasks:
-  - name: Install dh-autoreconf
+  - name: Add git PPA
+    shell: add-apt-repository ppa:git-core/ppa
+  - name: Install git
     apt:
-      name: dh-autoreconf
-      update_cache: yes
-  - name: Install libcurl4-gnutls-dev
+      name: "git={{ git_version_to_install }}"
+  - name: Install Git Bash Completion
     apt:
-      name: libcurl4-gnutls-dev
+      name: bash-completion
       update_cache: yes
-  - name: Install libexpat1-dev
-    apt:
-      name: libexpat1-dev
-      update_cache: yes
-  - name: Install gettext
-    apt:
-      name: gettext
-      update_cache: yes
-  - name: Install libz-dev
-    apt:
-      name: libz-dev
-      update_cache: yes
-  - name: Install libssl-dev
-    apt:
-      name: libssl-dev
-      update_cache: yes
-  - name: Install install-info
-    apt:
-      name: install-info
-      update_cache: yes
-  - name: Download git (v2.36.1) tarball
-    shell: wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.36.1.tar.gz -O /home/kasm-default-profile/git-2.36.1.tar.gz
-  - name: Extract git source files
-    unarchive:
-      src: /home/kasm-default-profile/git-2.36.1.tar.gz
-      dest: /home/kasm-default-profile/
-      remote_src: yes
-      creates: /home/kasm-default-profile/git-2.36.1/README.md
-  - name: Delete git tarball
-    shell: rm /home/kasm-default-profile/git-2.36.1.tar.gz
-  - name: Build git
-    shell:
-      cmd: make configure && ./configure --prefix=/usr && make > /tmp/git_build_output.txt 2>&1 && make install
-      chdir: /home/kasm-default-profile/git-2.36.1
-      executable: /bin/bash
-  - name: Delete git source files
-    shell: rm -rf /home/kasm-default-profile/git-2.36.1
   - name: Install Keychain
     apt:
       name: "keychain={{ keychain_version_to_install }}"
+      update_cache: yes
+  - name: install ping
+    apt:
+      name: iputils-ping
       update_cache: yes
   - name: Get git version
     shell: git version | sed 's/[[:alpha:]|(|[:space:]]//g'
     register: installed_git_version
   - name: Get keychain version
-    shell: 
+    shell:
       cmd: keychain -V 2> >(grep -i keychain) 2> >(sed 's/[[:alpha:]|(|[:space:]]//g') | fgrep '*' | sed 's/[*~://]//g'
       executable: /bin/bash
     register: installed_keychain_version
@@ -170,11 +138,13 @@
   - name: Test git version
     fail:
       msg: "Git Version Error: Expected {{ git_version }} | Found {{ installed_git_version.stdout }}"
-    when: installed_git_version.stdout != git_version  
+    when: installed_git_version.stdout != git_version
   - name: Test keychain version
     fail:
       msg: "Keychain Version Error: Expected {{ keychain_version_expected }} | Found {{ installed_keychain_version.stdout }}"
     when: installed_keychain_version.stdout != keychain_version_expected
+  - name: auto-launch keychain in shell, if ssh keys exists
+    shell: echo 'if [ -r ~/.ssh/id_ed25519 ]; then\n    eval `keychain --eval id_ed25519`\nfi' >> /home/kasm-default-profile/.bashrc
   - name: Install @capsulecorplab .vimrc
     get_url:
       url: https://gist.githubusercontent.com/capsulecorplab/495058e7a57ed8adaed3c40c80d09739/raw/4a6e6f6ff92b96919be111c9cbb5a4a21ab472d2/.vimrc
