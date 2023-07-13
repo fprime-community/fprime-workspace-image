@@ -236,7 +236,12 @@
 
   tasks:
   - name: Recursively clone fprime-system-reference
-    shell: git clone --recursive -b update-fprime-system-reference-to-use-fprime-v3.2.0 https://github.com/capsulecorplab/fprime-system-reference.git
+    shell: git clone --recursive https://github.com/fprime-community/fprime-system-reference.git
+  - name: Checkout commit with fprime v3.2.0 support in fprime-system-reference
+    shell:
+      cmd: git checkout a49e3179ea0eea972028d650cffa3f22602d77b6
+      chdir: /home/kasm-default-profile/fprime-system-reference
+      executable: /bin/bash
   - name: Download OpenCV source tarball
     shell:
       cmd: wget https://github.com/opencv/opencv/archive/refs/tags/{{ opencv_version }}.tar.gz -O /home/kasm-default-profile/opencv-{{ opencv_version }}.tar.gz
