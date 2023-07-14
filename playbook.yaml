@@ -261,6 +261,11 @@
       executable: /bin/bash
   - name: Delete OpenCV source directory and source tarball
     shell: rm -rf /home/kasm-default-profile/opencv-*
+  - name: Delete fprime-system-reference source files
+    shell:
+      cmd: rm -rf /home/kasm-default-profile/fprime-system-reference
+      chdir: /home/kasm-default-profile
+      executable: /bin/bash
 
 -
   # install Doctools
