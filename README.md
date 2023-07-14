@@ -1,5 +1,9 @@
 # F´ IIAC Workspace
 
+![](./screenshot-of-fprime-workspace-image-with-ingenuity-above-perseverance-on-mars-wallpaper.png)
+
+[Ingenuity Helicopter above Perseverance on Mars](https://photojournal.jpl.nasa.gov/catalog/PIA24127) (wallpaper) image credit: NASA/JPL-Caltech
+
 ## Introduction
 
 This repo provides the source code for building an Immutable-Infrastructure-as-Code (IIAC) workspace image, using Kasm, for the [F´(F Prime)](https://github.com/nasa/fprime) flight software and embedded systems framework, based on an Ansible template for [KASM Ubuntu Jammy](https://hub.docker.com/r/kasmweb/core-ubuntu-jammy) images.  The workspace is configured with the following software:
