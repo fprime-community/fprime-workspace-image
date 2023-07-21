@@ -226,6 +226,7 @@
         - pint
         - setuptools
         - git+https://github.com/SterlingPeet/arduino-cli-cmake-wrapper.git@{{ arduino_cli_cmake_wrapper_version }}#egg=arduino-cli-cmake-wrapper
+        - pyserial
   - name: Install fprime python packages & dependencies
     pip:
       requirements: https://raw.githubusercontent.com/nasa/fprime/v3.2.0/requirements.txt

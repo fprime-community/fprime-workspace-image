@@ -26,6 +26,7 @@ This repo provides the source code for building an Immutable-Infrastructure-as-C
     - [Jupyter Notebook](https://jupyter.org/)
     - [Voilà](https://voila.readthedocs.io/en/stable/index.html)
     - [Pint](https://pint.readthedocs.io/en/stable/)
+    - [pySerial](https://github.com/pyserial/pyserial)
 - Arduino tools for building fprime for embedded platforms
     - [Arduino CLI](https://github.com/arduino/arduino-cli) 0.33.1
     - [Arduino CLI CMake Wrapper](https://github.com/SterlingPeet/arduino-cli-cmake-wrapper)
