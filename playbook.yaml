@@ -336,6 +336,23 @@
       dest: /etc/udev/rules.d
 
 -
+  # add default user to dialout group
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags:
+    - install_arduino_tools
+
+  tasks:
+  - name: Add kasm-user to dialout group (for fixing Permission Denied on /dev/ttyACM0 issue) # see https://www.shellhacks.com/arduino-dev-ttyacm0-permission-denied/
+    user:
+      name: kasm-user
+      shell: /bin/bash
+      groups: "dialout"
+      state: present
+      remove: yes
+
+-
   # install Doctools
   hosts: localhost
   connection: local
