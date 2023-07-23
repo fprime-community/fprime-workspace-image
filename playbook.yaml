@@ -202,6 +202,11 @@
   hosts: localhost
   connection: local
   gather_facts: yes
+  tags:
+    - install_arduino_tools
+
+  vars:
+    arduino_cli_cmake_wrapper_version: "94c3145e5ea4a0a48dc3f70560dfb8a"
 
   tasks:
   - name: Update OS to point python to python3
@@ -220,9 +225,132 @@
         - voila
         - pint
         - setuptools
+        - git+https://github.com/SterlingPeet/arduino-cli-cmake-wrapper.git@{{ arduino_cli_cmake_wrapper_version }}#egg=arduino-cli-cmake-wrapper
+        - pyserial
   - name: Install fprime python packages & dependencies
     pip:
       requirements: https://raw.githubusercontent.com/nasa/fprime/v3.2.0/requirements.txt
+
+-
+  # install arduino-cli
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags:
+    - install_arduino_tools
+
+  vars:
+    arduino_version: "1.8.19"
+    arduino_cli_version: "0.33.1"
+    arduino_pico_version: "3.3.0"
+    arduino_esp32_version: "2.0.9"
+    adafruit_samd_version: "1.7.13"
+    fprime_arduino_led_blinker_version: "8d9ad820c0caeb66c4472801ed9f76b1d622694e"
+
+  tasks:
+  - name: Download Arduino CLI tarball
+    get_url:
+      url: https://github.com/arduino/arduino-cli/releases/download/{{ arduino_cli_version }}/arduino-cli_{{ arduino_cli_version }}_Linux_64bit.tar.gz
+      dest: /home/kasm-default-profile
+  - name: Create directory for Arduino CLI tarball
+    shell: mkdir -p /home/kasm-default-profile/arduino-cli_{{ arduino_cli_version }}
+  - name: unarchive Arduino CLI tarball
+    unarchive:
+      src: /home/kasm-default-profile/arduino-cli_{{ arduino_cli_version }}_Linux_64bit.tar.gz
+      dest: /home/kasm-default-profile/arduino-cli_{{ arduino_cli_version }}
+      remote_src: yes
+      creates: /home/kasm-default-profile/arduino-cli_{{ arduino_cli_version }}/License.txt
+  - name: Delete Arduino CLI tarball
+    shell: rm /home/kasm-default-profile/arduino-cli_{{ arduino_cli_version }}_Linux_64bit.tar.gz
+  - name: install Arduino CLI to /usr/local/bin
+    shell: mv /home/kasm-default-profile/arduino-cli_{{ arduino_cli_version }}/arduino-cli /usr/local/bin
+  - name: Delete Arduino CLI directory
+    shell: rm -rf /home/kasm-default-profile/arduino-cli_{{ arduino_cli_version }}
+  - name: Get Arduino CLI version
+    shell: arduino-cli version | sed 's/arduino-cli/\n/g' | sed 's/Commit:/\n/g' | grep Version | sed 's/[[:alpha:]|[:space:]]//g' | sed 's/://g'
+    register: installed_arduino_cli_version
+  - name: Display Arduino CLI version
+    debug:
+      msg: "Arduino CLI version = {{ installed_arduino_cli_version.stdout }}"
+  - name: Test Arduino CLI version
+    fail:
+      msg: "Arduino CLI Version Error: Expected {{ arduino_cli_version }} | Found {{ installed_arduino_cli_version.stdout }}"
+    when: installed_arduino_cli_version.stdout != arduino_cli_version
+  - name: Initialize arduino workspace directory using arduino-cli
+    shell: arduino-cli config init
+  - name: Add URL for Arduino-Pico package index to Board Manager using arduino-cli
+    shell: arduino-cli config add board_manager.additional_urls https://github.com/earlephilhower/arduino-pico/releases/download/{{ arduino_pico_version }}/package_rp2040_index.json
+  - name: Add URL for Arduino-ESP32 package index to Board Manager using arduino-cli
+    shell: arduino-cli config add board_manager.additional_urls https://github.com/espressif/arduino-esp32/releases/download/{{ arduino_esp32_version }}/package_esp32_index.json
+  - name: Add URL for Adafruit package index to Board Manager using arduino-cli
+    shell: arduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/adafruit/arduino-board-index/8a67f577257b5f3e958ce32f18b55a8491f6d06f/package_adafruit_index.json
+  - name: Add URL for Teensy package index to Board Manager using arduino-cli
+    shell: arduino-cli config add board_manager.additional_urls https://www.pjrc.com/teensy/package_teensy_index.json
+  - name: Update index using arduino-cli
+    shell: arduino-cli core update-index
+  - name: Install package index for Arduino-Pico using arduino-cli
+    shell: arduino-cli core install rp2040:rp2040@{{ arduino_pico_version }}
+  - name: Install package index for Arduino-ESP32 using arduino-cli
+    shell: arduino-cli core install esp32:esp32@{{ arduino_esp32_version }}
+  - name: Install package index for Adafruit-SAMD using arduino-cli
+    shell: arduino-cli core install adafruit:samd@{{ adafruit_samd_version }}
+  - name: Install package index for Teensy using arduino-cli
+    shell: arduino-cli core install teensy:avr
+  - name: Get Arduino-Pico version
+    shell: arduino-cli core list | grep rp2040 | awk '{ print $2'}
+    register: installed_arduino_pico_version
+  - name: Get Arduino-ESP32 version
+    shell: arduino-cli core list | grep esp32 | awk '{ print $2'}
+    register: installed_arduino_esp32_version
+  - name: Get Adafruit-SAMD version
+    shell: arduino-cli core list | grep adafruit | awk '{ print $2'}
+    register: installed_adafruit_samd_version
+  - name: Display Arduino-Pico version
+    debug:
+      msg: "Arduino-Pico version = {{ installed_arduino_pico_version.stdout }}"
+  - name: Display Arduino-ESP32 version
+    debug:
+      msg: "Arduino-ESP32 version = {{ installed_arduino_esp32_version.stdout }}"
+  - name: Display Adafruit board index version
+    debug:
+      msg: "Adafruit-SAMD version = {{ installed_adafruit_samd_version.stdout }}"
+  - name: Test Arduino-Pico version
+    fail:
+      msg: "Arduino-Pico Version Error: Expected {{ arduino_pico_version }} | Found {{ installed_arduino_pico_version.stdout }}"
+    when: installed_arduino_pico_version.stdout != arduino_pico_version
+  - name: Test Arduino-ESP32 version
+    fail:
+      msg: "Arduino-ESP32 Version Error: Expected {{ arduino_esp32_version }} | Found {{ installed_arduino_esp32_version.stdout }}"
+    when: installed_arduino_esp32_version.stdout != arduino_esp32_version
+  - name: Test Adafruit board index version
+    fail:
+      msg: "Adafruit-SAMD Version Error: Expected {{ adafruit_samd_version }} | Found {{ installed_adafruit_samd_version.stdout }}"
+    when: installed_adafruit_samd_version.stdout != adafruit_samd_version
+  - name: Download Teensy rules to /etc/udev/rules.d
+    get_url:
+      url: https://raw.githubusercontent.com/fprime-community/fprime-arduino-led-blinker/{{ fprime_arduino_led_blinker_version }}/docs/rules/00-teensy.rules
+      dest: /etc/udev/rules.d
+  - name: Download Adafruit boards rules to /etc/udev/rules.d
+    get_url:
+      url: https://raw.githubusercontent.com/fprime-community/fprime-arduino-led-blinker/{{ fprime_arduino_led_blinker_version }}/docs/rules/99-adafruit-boards.rules
+      dest: /etc/udev/rules.d
+
+-
+  # add default user to dialout group
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags:
+    - install_arduino_tools
+
+  tasks:
+  - name: Add kasm-user to dialout group (for fixing Permission Denied on /dev/ttyACM0 issue) # see https://www.shellhacks.com/arduino-dev-ttyacm0-permission-denied/
+    user:
+      name: kasm-user
+      shell: /bin/bash
+      groups: "dialout"
+      state: present
+      remove: yes
 
 -
   # install Doctools

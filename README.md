@@ -26,6 +26,14 @@ This repo provides the source code for building an Immutable-Infrastructure-as-C
     - [Jupyter Notebook](https://jupyter.org/)
     - [Voilà](https://voila.readthedocs.io/en/stable/index.html)
     - [Pint](https://pint.readthedocs.io/en/stable/)
+    - [pySerial](https://github.com/pyserial/pyserial)
+- Arduino tools for building fprime for embedded platforms
+    - [Arduino CLI](https://github.com/arduino/arduino-cli) 0.33.1
+    - [Arduino CLI CMake Wrapper](https://github.com/SterlingPeet/arduino-cli-cmake-wrapper)
+    - [Arduino Pico](https://github.com/earlephilhower/arduino-pico) 3.3.0
+    - [Arduino ESP32](https://github.com/espressif/arduino-esp32) 2.0.9
+    - [Teensy](https://www.pjrc.com/teensy/td_download.html)
+    - [Adafruit board index](https://github.com/adafruit/arduino-board-index) esptools-0.4.2-winfix
 - VS Code with the following extensions (note, auto-updates are disabled)
     - [Python extension by Microsoft](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
 
