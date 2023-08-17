@@ -209,6 +209,7 @@
     fprime_version: "v3.3.2"
     arduino_cli_cmake_wrapper_version: "94c3145e5ea4a0a48dc3f70560dfb8a"
     fprime_led_blinker_version: "5a0031db1d87a87e6ec343827cc5956d54b76509"
+    fprime_math_component_version: "9defcb5b1874c678ef5ed1068a0a581f9591ff95"
 
   tasks:
   - name: Update OS to point python to python3
@@ -257,13 +258,45 @@
       cmd: fprime-util generate --ut
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
-  - name: Build fprime led blinker unit tests
+  - name: Build and run fprime led blinker unit tests
     shell:
       cmd: fprime-util check 1> /tmp/fprime_workshop_led_blinker_build_output.txt
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
   - name: Delete fprime led blinker repo
     shell: rm -rf /home/kasm-default-profile/fprime-workshop-led-blinker
+  - name: Clone fprime math component repo
+    shell:
+      cmd: git clone --recursive https://github.com/fprime-community/fprime-tutorial-math-component.git
+      chdir: /home/kasm-default-profile/
+      executable: /bin/bash
+  - name: Checkout {{ fprime_math_component_version }} in fprime math component repo
+    shell:
+      cmd: git checkout {{ fprime_math_component_version }}
+      chdir: /home/kasm-default-profile/fprime-tutorial-math-component
+      executable: /bin/bash
+  - name: Fetch fprime submodule
+    shell:
+      cmd: git fetch
+      chdir: /home/kasm-default-profile/fprime-tutorial-math-component/fprime
+      executable: /bin/bash
+  - name: Checkout {{ fprime_version }} in fprime submodule
+    shell:
+      cmd: git checkout {{ fprime_version }}
+      chdir: /home/kasm-default-profile/fprime-tutorial-math-component/fprime
+      executable: /bin/bash
+  - name: Generate fprime math component unit tests
+    shell:
+      cmd: fprime-util generate --ut
+      chdir: /home/kasm-default-profile/fprime-tutorial-math-component
+      executable: /bin/bash
+  - name: Build and run fprime math component unit tests
+    shell:
+      cmd: fprime-util check 1> /tmp/fprime_math_component_build_output.txt
+      chdir: /home/kasm-default-profile/fprime-tutorial-math-component
+      executable: /bin/bash
+  - name: Delete fprime math component repo
+    shell: rm -rf /home/kasm-default-profile/fprime-tutorial-math-component
 
 -
   # install arduino-cli
