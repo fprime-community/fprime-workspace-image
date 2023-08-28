@@ -100,7 +100,7 @@
   tags: install_utilities
 
   vars:
-    git_version: "2.41.0"
+    git_version: "2.42.0"
     git_version_to_install: "1:{{ git_version }}-0ppa1~ubuntu22.04.1"
     keychain_version: "2.8.5"
     keychain_version_to_install: "{{ keychain_version }}-2"
