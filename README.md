@@ -38,6 +38,7 @@ This repo provides the source code for building an Immutable-Infrastructure-as-C
     - [Adafruit board index](https://github.com/adafruit/arduino-board-index) esptools-0.4.2-winfix
 - VS Code with the following extensions (note, auto-updates are disabled)
     - [Python extension by Microsoft](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+    - [VSCode language support for FPrimePrime modeling language by Jet Propulsion Laboratory](https://marketplace.visualstudio.com/items?itemName=jet-propulsion-laboratory.fpp)
 
 ## Requirements
 
