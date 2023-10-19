@@ -20,7 +20,7 @@ This repo provides the source code for building an Immutable-Infrastructure-as-C
 - Chrome
 - Python 3.10 (part of the image template) with the following packages (not part of the image template)
     - pip
-    - [fprime](https://github.com/nasa/fprime) 3.3.0
+    - [fprime](https://github.com/nasa/fprime) 3.3.2
         - [fprime-tools](https://github.com/fprime-community/fprime-tools)
         - [fprime-gds](https://github.com/fprime-community/fprime-gds)
         - [fpp](https://github.com/fprime-community/fpp)
