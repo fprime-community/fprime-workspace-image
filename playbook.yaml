@@ -260,7 +260,7 @@
       executable: /bin/bash
   - name: Build and run fprime led blinker unit tests
     shell:
-      cmd: fprime-util check 1> /tmp/fprime_workshop_led_blinker_build_output.txt
+      cmd: fprime-util check -v -rerun-failed --output-on-failure 1> /tmp/fprime_workshop_led_blinker_build_output.txt
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
   - name: Delete fprime led blinker repo
@@ -292,7 +292,7 @@
       executable: /bin/bash
   - name: Build and run fprime math component unit tests
     shell:
-      cmd: fprime-util check -v 1> /tmp/fprime_math_component_build_output.txt
+      cmd: fprime-util check -v -rerun-failed --output-on-failure 1> /tmp/fprime_math_component_build_output.txt
       chdir: /home/kasm-default-profile/fprime-tutorial-math-component
       executable: /bin/bash
   - name: Delete fprime math component repo
