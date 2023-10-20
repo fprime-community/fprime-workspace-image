@@ -20,6 +20,8 @@
     - "{{ ansible_distribution }}"
     - "{{ ansible_distribution_version }}"
     - "{{ ansible_distribution_major_version }}"
+  - name: Verify install_files is present
+    debug: msg="install_files/_README = {{ lookup('file', '/home/kasm-default-profile/install_files/_README') }}"
     # Detect if we are running on a WSL2 environment
   - name: Set wsl2_environment fact default to false
     set_fact:

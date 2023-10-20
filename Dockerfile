@@ -8,6 +8,9 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
+# copy over install_files/ for use in playbooks
+ADD install_files $HOME/install_files
+
 # install Ansible per 
 # https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-ubuntu
 RUN apt update && apt -y install software-properties-common && add-apt-repository --yes --update ppa:ansible/ansible && apt install -y ansible && rm -rf /var/lib/apt/lists/*
@@ -22,6 +25,9 @@ COPY ./ingenuity_helicopter_on_mars.png /usr/share/extra/backgrounds/bg_default.
 # Create .profile and set XFCE terminal to use it
 RUN cp /etc/skel/.profile $HOME/.profile && mkdir $HOME/.config/xfce4/terminal/
 COPY ./terminalrc /home/kasm-default-profile/.config/xfce4/terminal/terminalrc
+
+# clean up install_files/
+RUN rm -rf $HOME/install_files/
 
 ######### End Customizations ###########
 
