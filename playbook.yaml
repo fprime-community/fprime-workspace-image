@@ -20,6 +20,8 @@
     - "{{ ansible_distribution }}"
     - "{{ ansible_distribution_version }}"
     - "{{ ansible_distribution_major_version }}"
+  - name: Verify install_files is present
+    debug: msg="install_files/_README = {{ lookup('file', '/home/kasm-default-profile/install_files/_README') }}"
     # Detect if we are running on a WSL2 environment
   - name: Set wsl2_environment fact default to false
     set_fact:
@@ -84,13 +86,35 @@
     shell: update-alternatives --install /usr/bin/javac javac /opt/jdk-11/bin/javac 100
 
 -
-  # install chrome
+  # install firefox
   hosts: localhost
   connection: local
   gather_facts: yes
+  tags:
+  - install_firefox
 
-  roles:
-    - role: webarchitect609.google_chrome
+  vars:
+    firefox_profiles:
+      default:
+        extensions:
+          - ublock-origin
+        preferences:
+          network.cookie.cookieBehavior: 1
+          privacy.donottrackheader.enabled: true
+          datareporting.healthreport.uploadEnabled: false
+      secondprofile:
+        extensions:
+          - adblock-plus
+        preferences:
+          privacy.donottrackheader.enabled: false
+          privacy.trackingprotection.enabled: false
+          signon.rememberSignons: false
+          datareporting.healthreport.uploadEnabled: false
+
+  pre_tasks:
+  - name: Update apt packages
+    apt:
+      update_cache: yes
 
 -
   # install keychain, git, and @capsulecorplab .vimrc and .gitconfig
@@ -360,13 +384,13 @@
     fail:
       msg: "Adafruit-SAMD Version Error: Expected {{ adafruit_samd_version }} | Found {{ installed_adafruit_samd_version.stdout }}"
     when: installed_adafruit_samd_version.stdout != adafruit_samd_version
-  - name: Download Teensy rules to /etc/udev/rules.d
-    get_url:
-      url: https://raw.githubusercontent.com/fprime-community/fprime-arduino-led-blinker/{{ fprime_arduino_led_blinker_version }}/docs/rules/00-teensy.rules
+  - name: Install Teensy rules to /etc/udev/rules.d
+    copy:
+      src: /home/kasm-default-profile/install_files/00-teensy.rules
       dest: /etc/udev/rules.d
-  - name: Download Adafruit boards rules to /etc/udev/rules.d
-    get_url:
-      url: https://raw.githubusercontent.com/fprime-community/fprime-arduino-led-blinker/{{ fprime_arduino_led_blinker_version }}/docs/rules/99-adafruit-boards.rules
+  - name: Install Adafruit boards rules to /etc/udev/rules.d
+    copy:
+      src: /home/kasm-default-profile/install_files/99-adafruit-boards.rules
       dest: /etc/udev/rules.d
 
 -

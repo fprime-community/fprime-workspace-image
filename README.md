@@ -17,7 +17,7 @@ This repo provides the source code for building an Immutable-Infrastructure-as-C
   - [cmake v3.23](http://www.cmake.org/files/v3.23)
 - git cli
 - [Keychain](https://www.funtoo.org/Keychain)
-- Chrome
+- Firefox
 - Python 3.10 (part of the image template) with the following packages (not part of the image template)
     - pip
     - [fprime](https://github.com/nasa/fprime) 3.3.2
