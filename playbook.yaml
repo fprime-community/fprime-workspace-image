@@ -116,6 +116,9 @@
     apt:
       update_cache: yes
 
+  roles:
+    - role: staticdev.firefox
+
 -
   # install keychain, git, and @capsulecorplab .vimrc and .gitconfig
   hosts: localhost
