@@ -173,13 +173,15 @@
   - name: auto-launch keychain in shell, if ssh keys exists
     shell: echo 'if [ -r ~/.ssh/id_ed25519 ]; then\n    eval `keychain --eval id_ed25519`\nfi' >> /home/kasm-default-profile/.bashrc
   - name: Install @capsulecorplab .vimrc
-    get_url:
-      url: https://gist.githubusercontent.com/capsulecorplab/495058e7a57ed8adaed3c40c80d09739/raw/4a6e6f6ff92b96919be111c9cbb5a4a21ab472d2/.vimrc
-      dest: /home/kasm-default-profile/
+    copy:
+      src: /home/kasm-default-profile/install_files/.vimrc
+      dest: /home/kasm-default-profile/.vimrc
+      remote_src: yes
   - name: Install @capsulecorplab .gitconfig
-    get_url:
-      url: https://gist.githubusercontent.com/capsulecorplab/401ba2fe0857a328f2a626adbf078cc6/raw/b89a6234f0d620ff60bcfe37f95de197b8772377/.gitconfig
-      dest: /home/kasm-default-profile/
+    copy:
+      src: /home/kasm-default-profile/install_files/.gitconfig
+      dest: /home/kasm-default-profile/.gitconfig
+      remote_src: yes
 
 -
   # install Cross-compile toolchain for embedded Linux target
