@@ -172,6 +172,8 @@
     when: installed_keychain_version.stdout != keychain_version_expected
   - name: auto-launch keychain in shell, if ssh keys exists
     shell: echo 'if [ -r ~/.ssh/id_ed25519 ]; then\n    eval `keychain --eval id_ed25519`\nfi' >> /home/kasm-default-profile/.bashrc
+  - name: Configure autocomplete for fprime # as per https://nasa.github.io/fprime/UsersGuide/user/autocomplete.html#installing-autocomplete
+    shell: echo 'eval "$(register-python-argcomplete fprime-cli)"' >> /home/kasm-default-profile/.bashrc
   - name: Install @capsulecorplab .vimrc
     copy:
       src: /home/kasm-default-profile/install_files/.vimrc
