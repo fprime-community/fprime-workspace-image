@@ -418,12 +418,22 @@
   hosts: localhost
   connection: local
   gather_facts: yes
-  tags: install_doxygen
+  tags:
+  - install_doxygen
+  - install_doctools
 
   vars:
     doxygen_version: "1.9.6"
+    bundler_version: 2.4.22
 
   tasks:
+  - name: Install Ruby
+    apt:
+      name: ruby-full
+      update_cache: yes
+  - name: Run gem install for bundler
+    shell:
+      cmd: "gem install bundler -v {{ bundler_version }}"
   - name: Install doxygen dependencies # as per https://stackoverflow.com/questions/50986047/doxygen-could-not-find-flex-missing-flex-executable
     apt:
       name: flex, bison
