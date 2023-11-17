@@ -56,8 +56,8 @@
   hosts: localhost
   connection: local
   tags:
-  - install_doxygen
-  - install_cross_compile_toolchain
+    - install_doxygen
+    - install_cross_compile_toolchain
 
   tasks:
   - name: Install build-essential
@@ -186,8 +186,8 @@
   hosts: localhost
   connection: local
   tags:
-  - install_cross_compile_toolchain
-  - install_doxygen
+    - install_cross_compile_toolchain
+    - install_doxygen
 
   tasks:
   - name: Install gcc-arm-linux-gnueabihf with Apt
@@ -236,6 +236,7 @@
     fprime_version: "v3.3.2"
     arduino_cli_cmake_wrapper_version: "94c3145e5ea4a0a48dc3f70560dfb8a"
     fprime_led_blinker_version: "5a0031db1d87a87e6ec343827cc5956d54b76509"
+    bundler_version: 2.4.22
 
   tasks:
   - name: Update OS to point python to python3
@@ -291,6 +292,52 @@
       executable: /bin/bash
   - name: Delete fprime led blinker repo
     shell: rm -rf /home/kasm-default-profile/fprime-workshop-led-blinker
+  - name: Install Ruby
+    apt:
+      name: ruby-full
+      update_cache: yes
+  - name: Run gem install for bundler
+    shell:
+      cmd: "gem install bundler -v {{ bundler_version }}"
+  - name: Clone fprime {{ fprime_version }}
+    shell:
+      cmd: git clone --recursive https://github.com/nasa/fprime.git
+      chdir: /home/kasm-default-profile/
+      executable: /bin/bash
+  - name: Checkout {{ fprime_version }} in fprime repo
+    shell:
+      cmd: git checkout {{ fprime_version }}
+      chdir: /home/kasm-default-profile/fprime
+      executable: /bin/bash
+  - name: Generate Gemfile using bundler in fprime/docs
+    shell:
+      cmd: bundler init
+      chdir: /home/kasm-default-profile/fprime/docs
+      executable: /bin/bash
+  - name: Add jekyll to Gemfile in fprime/docs using bundler
+    shell:
+      cmd: bundler add jekyll
+      chdir: /home/kasm-default-profile/fprime/docs
+      executable: /bin/bash
+  - name: Setup jekyll scaffolding in fprime/docs using bundler
+    shell:
+      cmd: bundle exec jekyll new --force --skip-bundle .
+      chdir: /home/kasm-default-profile/fprime/docs
+      executable: /bin/bash
+  - name: Install jekyll from Gemfile.lock in fprime/docs using bundler
+    shell:
+      cmd: bundler install
+      chdir: /home/kasm-default-profile/fprime/docs
+      executable: /bin/bash
+  - name: Build jekyll site in fprime/docs/_site using bundler
+    shell:
+      cmd: bundle exec jekyll build
+      chdir: /home/kasm-default-profile/fprime/docs
+      executable: /bin/bash
+  - name: Copy contents of fprime/docs to Desktop
+    copy:
+      src: /home/kasm-default-profile/fprime/docs
+      dest: /home/kasm-default-profile/Desktop
 
 -
   # install arduino-cli
@@ -419,21 +466,12 @@
   connection: local
   gather_facts: yes
   tags:
-  - install_doxygen
-  - install_doctools
+    - install_doxygen
 
   vars:
     doxygen_version: "1.9.6"
-    bundler_version: 2.4.22
 
   tasks:
-  - name: Install Ruby
-    apt:
-      name: ruby-full
-      update_cache: yes
-  - name: Run gem install for bundler
-    shell:
-      cmd: "gem install bundler -v {{ bundler_version }}"
   - name: Install doxygen dependencies # as per https://stackoverflow.com/questions/50986047/doxygen-could-not-find-flex-missing-flex-executable
     apt:
       name: flex, bison
