@@ -293,7 +293,7 @@
       cmd: git checkout {{ fprime_version }}
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
       executable: /bin/bash
-  - name: Initialize submodules in fprime submodule
+  - name: Initialize submodules in fprime-workshop-led-blinker/fprime submodule
     shell:
       cmd: git submodule update --init --recursive
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
@@ -328,6 +328,11 @@
   - name: Checkout {{ fprime_version }} in fprime submodule
     shell:
       cmd: git checkout {{ fprime_version }}
+      chdir: /home/kasm-default-profile/fprime-tutorial-math-component/fprime
+      executable: /bin/bash
+  - name: Initialize submodules in fprime-tutorial-math-component/fprime submodule
+    shell:
+      cmd: git submodule update --init --recursive
       chdir: /home/kasm-default-profile/fprime-tutorial-math-component/fprime
       executable: /bin/bash
   - name: Generate fprime math component unit tests
