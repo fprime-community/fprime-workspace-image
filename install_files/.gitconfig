@@ -1,0 +1,60 @@
+[alias]
+    a = add
+    ap = add -p
+
+    b = branch -v
+    bd = branch -d -v
+    bD = branch -D -v
+
+    cl = clone
+    clr = clone --recurse-submodules
+
+    c = commit --verbose
+    ca = commit --amend --verbose
+    can = commit --amend --verbose --no-edit
+
+
+    co = checkout
+    cob = checkout -b
+    com = checkout main
+    cod = checkout dev
+
+    cp = cherry-pick
+    cpc = cherry-pick --continue
+    cpa = cherry-pick --abort
+
+    d = diff
+    ds = diff --stat
+    dc = diff --cached
+
+    f = fetch --prune
+    fo = fetch origin --prune
+    fa = fetch --all --prune
+
+    i = init
+
+    jk = reset --soft HEAD~
+
+    l = log
+    lo = log --oneline
+    la = log --graph --all
+    dag = log --graph --oneline --all
+
+    rb = rebase
+    rbc = rebase --continue
+    rba = rebase --abort
+    rbi = rebase --interactive
+
+    rv = remote -v
+
+    rh = reset --h
+    rs = reset --s
+
+    s = status
+
+    h = show HEAD
+
+    p = push
+    pf = push -f
+    psu = push --set-upstream
+    psuo = push --set-upstream origin
