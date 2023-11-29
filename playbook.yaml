@@ -226,6 +226,16 @@
     shell: ln -srv /opt/{{ cmake_bin_directory }}/bin/cmake /usr/local/bin/cmake
   - name: Delete cmake tarball
     shell: rm /home/kasm-default-profile/{{ cmake_bin_directory }}.tar.gz
+  - name: Get CMake version
+    shell: cmake --version | grep 'cmake version' | awk '{ print $3'}
+    register: installed_cmake_version
+  - name: Display CMake version
+    debug:
+      msg: "cmake = {{ installed_cmake_version.stdout }}"
+  - name: Test CMake version
+    fail:
+      msg: "CMake Version Error: Expected {{ cmake_version }} | Found {{ installed_cmake_version.stdout }}"
+    when: installed_cmake_version.stdout != cmake_version
 
 -
   # install Python packages with pip
