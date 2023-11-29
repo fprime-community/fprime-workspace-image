@@ -292,6 +292,11 @@
       cmd: git checkout {{ fprime_version }}
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
       executable: /bin/bash
+  - name: Initialize submodules in fprime submodule
+    shell:
+      cmd: git submodule update --init --recursive
+      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
+      executable: /bin/bash
   - name: Generate fprime led blinker unit tests
     shell:
       cmd: fprime-util generate --ut
