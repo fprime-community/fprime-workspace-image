@@ -193,6 +193,10 @@
   - install_cross_compile_toolchain
   - install_doxygen
 
+  vars:
+    cmake_version: "3.27.9"
+    cmake_bin_directory: "cmake-{{ cmake_version }}-linux-x86_64"
+
   tasks:
   - name: Install gcc-arm-linux-gnueabihf with Apt
     apt:
@@ -210,23 +214,18 @@
     apt:
       name: libssl-dev
       update_cache: yes
-  - name: Download cmake tarball
-    shell: wget http://www.cmake.org/files/v3.23/cmake-3.23.1.tar.gz -O /home/kasm-default-profile/cmake-3.23.1.tar.gz
-  - name: Extract cmake source files
+  - name: Download cmake {{ cmake_version }} binary distribution tarball
+    shell: wget https://github.com/Kitware/CMake/releases/download/v{{ cmake_version }}/{{ cmake_bin_directory }}.tar.gz -O /home/kasm-default-profile/{{ cmake_bin_directory }}.tar.gz
+  - name: Extract cmake tarball to /opt
     unarchive:
-      src: /home/kasm-default-profile/cmake-3.23.1.tar.gz
-      dest: /home/kasm-default-profile/
+      src: /home/kasm-default-profile/{{ cmake_bin_directory }}.tar.gz
+      dest: /opt
       remote_src: yes
-      creates: /home/kasm-default-profile/cmake-3.23.1/README
+      creates: /opt/{{ cmake_bin_directory }}/doc/cmake/Copyright.txt
+  - name: Create symlink for cmake binary in /usr/local/bin
+    shell: ln -srv /opt/{{ cmake_bin_directory }}/bin/cmake /usr/local/bin/cmake
   - name: Delete cmake tarball
-    shell: rm /home/kasm-default-profile/cmake-3.23.1.tar.gz
-  - name: Build cmake
-    shell:
-      cmd: ./configure && make > /tmp/cmake_build_output.txt 2>&1 && make install
-      chdir: /home/kasm-default-profile/cmake-3.23.1/
-      executable: /bin/bash
-  - name: Delete cmake source files
-    shell: rm -rf /home/kasm-default-profile/cmake-3.23.1/
+    shell: rm /home/kasm-default-profile/{{ cmake_bin_directory }}.tar.gz
 
 -
   # install Python packages with pip
