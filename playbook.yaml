@@ -342,7 +342,12 @@
       cmd: bundle exec jekyll new --force --skip-bundle .
       chdir: /home/kasm-default-profile/fprime/docs
       executable: /bin/bash
-  - name: Install jekyll from Gemfile.lock in fprime/docs using bundler
+  - name: Add fprime-community/fprime-theme@main to Gemfile in fprime/docs using bundler
+    shell:
+      cmd: echo 'gem "fprime-theme", git{{ ":" }} "https://github.com/fprime-community/fprime-theme"' >> Gemfile
+      chdir: /home/kasm-default-profile/fprime/docs
+      executable: /bin/bash
+  - name: Install jekyll and fprime-theme from Gemfile.lock in fprime/docs using bundler
     shell:
       cmd: bundler install
       chdir: /home/kasm-default-profile/fprime/docs
