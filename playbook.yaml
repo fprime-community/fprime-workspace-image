@@ -305,7 +305,7 @@
       executable: /bin/bash
   - name: Build and run fprime led blinker unit tests
     shell:
-      cmd: fprime-util check -v -rerun-failed --output-on-failure 1> /tmp/fprime_workshop_led_blinker_build_output.txt
+      cmd: fprime-util check
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
   - name: Delete fprime led blinker repo
