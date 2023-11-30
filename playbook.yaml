@@ -342,7 +342,7 @@
       executable: /bin/bash
   - name: Build and run fprime math component unit tests
     shell:
-      cmd: fprime-util check -v -rerun-failed --output-on-failure
+      cmd: fprime-util check -v
       chdir: /home/kasm-default-profile/fprime-tutorial-math-component
       executable: /bin/bash
   - name: Delete fprime math component repo
