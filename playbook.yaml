@@ -347,6 +347,11 @@
       cmd: bundler install
       chdir: /home/kasm-default-profile/fprime/docs
       executable: /bin/bash
+  - name: Restore changes to fprime/docs/_config.yml
+    shell:
+      cmd: git restore _config.yml
+      chdir: /home/kasm-default-profile/fprime/docs
+      executable: /bin/bash
   - name: Build jekyll site in fprime/docs/_site using bundler
     shell:
       cmd: bundle exec jekyll build
