@@ -347,6 +347,15 @@
       cmd: echo 'gem "fprime-theme", git{{ ":" }} "https://github.com/fprime-community/fprime-theme"' >> Gemfile
       chdir: /home/kasm-default-profile/fprime/docs
       executable: /bin/bash
+  - name: Get contents of fprime/docs/Gemfile
+    shell:
+      cmd: cat Gemfile
+      chdir: /home/kasm-default-profile/fprime/docs
+      executable: /bin/bash
+    register: fprime_docs_gemfile
+  - name: Display fprime/docs/Gemfile
+    debug:
+      msg: "fprime/docs/Gemfile = {{ fprime_docs_gemfile.stdout }}"
   - name: Install jekyll and fprime-theme from Gemfile.lock in fprime/docs using bundler
     shell:
       cmd: bundler install
