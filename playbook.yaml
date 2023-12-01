@@ -371,10 +371,15 @@
       cmd: bundle exec jekyll build
       chdir: /home/kasm-default-profile/fprime/docs
       executable: /bin/bash
-  - name: Copy contents of fprime/docs to Desktop
+  - name: Copy fprime/docs to Desktop
     copy:
       src: /home/kasm-default-profile/fprime/docs
       dest: /home/kasm-default-profile/Desktop
+  - name: Remove fprime from /home/kasm-default-profile
+    shell:
+      cmd: rm -rf fprime
+      chdir: /home/kasm-default-profile
+      executable: /bin/bash
 
 -
   # install arduino-cli
