@@ -374,6 +374,8 @@
     shell: arduino-cli core install adafruit:samd@{{ adafruit_samd_version }}
   - name: Install package index for Teensy using arduino-cli
     shell: arduino-cli core install teensy:avr
+  - name: Install RadioHead using arduino-cli
+    shell: arduino-cli lib install RadioHead
   - name: Get Arduino-Pico version
     shell: arduino-cli core list | grep rp2040 | awk '{ print $2'}
     register: installed_arduino_pico_version
