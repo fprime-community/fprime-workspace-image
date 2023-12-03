@@ -324,7 +324,6 @@
     arduino_pico_version: "3.3.0"
     arduino_esp32_version: "2.0.9"
     adafruit_samd_version: "1.7.13"
-    fprime_arduino_led_blinker_version: "8d9ad820c0caeb66c4472801ed9f76b1d622694e"
 
   tasks:
   - name: Download Arduino CLI tarball
