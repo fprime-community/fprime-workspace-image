@@ -3,7 +3,7 @@ version: "3.7"
 services:
   kasm:
     build: .
-    image: ghcr.io/capsulecorplab/fprime-workspace-image:v0.2.1
+    image: ghcr.io/capsulecorplab/fprime-workspace-image:v3.4.0-rc1.0.0
     ports:
       - "6901:6901"
       - "50000:50000"
