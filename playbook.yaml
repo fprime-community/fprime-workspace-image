@@ -415,6 +415,24 @@
       src: /home/kasm-default-profile/install_files/99-adafruit-boards.rules
       dest: /etc/udev/rules.d
 
+
+-
+  # install Minicom from debian package
+  hosts: localhost
+  connection: local
+  tags: install_minicom
+
+  tasks:
+  - name: Install Minicom debian package from install_files
+    shell: dpkg -i /home/kasm-default-profile/install_files/minicom_2.7.1-1.1_amd64.deb
+  - name: Add USER to dialout group
+    user:
+      name: default
+      shell: /bin/bash
+      groups: "dialout"
+      state: present
+      remove: yes
+
 -
   # add default user to dialout group
   hosts: localhost
