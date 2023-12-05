@@ -452,7 +452,7 @@
   tasks:
   - name: Clone fprime-baremetal
     shell:
-      cmd: git clone --recursive https://github.com/ethancheez/fprime-baremetal.git
+      cmd: git clone --recursive https://github.com/fprime-community/fprime-baremetal.git
       chdir: /home/kasm-default-profile/
       executable: /bin/bash
   - name: Fetch fprime-baremetal
