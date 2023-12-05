@@ -504,7 +504,7 @@
   - name: Add dev user
     user:
       name: dev
-      uid: 1001
+      uid: 1002
 
 -
   # install the remainder of the tools
