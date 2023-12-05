@@ -58,6 +58,7 @@
   tags:
   - install_doxygen
   - install_cross_compile_toolchain
+  - install_size_utility
 
   tasks:
   - name: Install build-essential
@@ -192,6 +193,7 @@
   tags:
   - install_cross_compile_toolchain
   - install_doxygen
+  - install_size_utility
 
   vars:
     cmake_version: "3.27.9"
@@ -244,6 +246,7 @@
   gather_facts: yes
   tags:
     - install_arduino_tools
+    - install_size_utility
 
   vars:
     fprime_version: "v3.4.0"
@@ -420,7 +423,9 @@
   # install Minicom from debian package
   hosts: localhost
   connection: local
-  tags: install_minicom
+  tags:
+  - install_minicom
+  - install_size_utility
 
   tasks:
   - name: Install Minicom debian package from install_files
@@ -432,6 +437,39 @@
       groups: "dialout"
       state: present
       remove: yes
+
+-
+  # install size utility
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags:
+    - install_size_utility
+
+  vars:
+    fprime_baremetal_branch: "size-utilility"
+
+  tasks:
+  - name: Clone fprime-baremetal
+    shell:
+      cmd: git clone --recursive https://github.com/ethancheez/fprime-baremetal.git
+      chdir: /home/kasm-default-profile/
+      executable: /bin/bash
+  - name: Fetch fprime-baremetal
+    shell:
+      cmd: git fetch --all
+      chdir: /home/kasm-default-profile/fprime-baremetal
+      executable: /bin/bash
+  - name: Checkout {{ fprime_baremetal_branch }} in fprime-baremetal repo
+    shell:
+      cmd: git checkout {{ fprime_baremetal_branch }}
+      chdir: /home/kasm-default-profile/fprime-baremetal
+      executable: /bin/bash
+  - name: pip install --upgrade .
+    shell:
+      cmd: pip install --upgrade .
+      chdir: /home/kasm-default-profile/fprime-baremetal
+      executable: /bin/bash
 
 -
   # add default user to dialout group
