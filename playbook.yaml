@@ -311,7 +311,7 @@
     shell: rm -rf /home/kasm-default-profile/fprime-workshop-led-blinker
 
 -
-  # install arduino-cli
+  # install arduino tools
   hosts: localhost
   connection: local
   gather_facts: yes
@@ -319,7 +319,8 @@
     - install_arduino_tools
 
   vars:
-    arduino_version: "1.8.19"
+    arduino_ide_version: "2.2.1"
+    arduino_ide_bin_directory: "arduino-ide_{{ arduino_ide_version }}_Linux_64bit"
     arduino_cli_version: "0.33.1"
     arduino_pico_version: "3.3.0"
     arduino_esp32_version: "2.0.9"
@@ -414,7 +415,22 @@
     copy:
       src: /home/kasm-default-profile/install_files/99-adafruit-boards.rules
       dest: /etc/udev/rules.d
-
+  - name: Download Arduino IDE zip
+    get_url:
+      url: https://github.com/arduino/arduino-ide/releases/download/{{ arduino_ide_version }}/{{ arduino_ide_bin_directory }}.zip
+      dest: /home/kasm-default-profile/install_files
+  - name: Install Unzip
+    apt:
+      name: unzip
+      update_cache: yes
+  - name: Unarchive Arduino IDE zip
+    unarchive:
+      src: /home/kasm-default-profile/install_files/{{ arduino_ide_bin_directory }}.zip
+      dest: /opt/
+      remote_src: yes
+      creates: /opt/{{ arduino_ide_bin_directory }}/LICENSE.electron.txt
+  - name: Create symlink for Arduino IDE binary in /usr/local/bin
+    shell: ln -srv /opt/{{ arduino_ide_bin_directory }}/arduino-ide /usr/local/bin/arduino-ide
 
 -
   # add default user to dialout group
