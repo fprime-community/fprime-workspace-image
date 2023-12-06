@@ -411,6 +411,10 @@
     copy:
       src: /home/kasm-default-profile/install_files/00-teensy.rules
       dest: /etc/udev/rules.d
+  - name: Install Teensy rules to /lib/udev/rules.d
+    copy:
+      src: /home/kasm-default-profile/install_files/00-teensy.rules
+      dest: /lib/udev/rules.d
   - name: Install Adafruit boards rules to /etc/udev/rules.d
     copy:
       src: /home/kasm-default-profile/install_files/99-adafruit-boards.rules
