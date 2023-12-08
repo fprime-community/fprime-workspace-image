@@ -192,6 +192,7 @@
   tags:
   - install_cross_compile_toolchain
   - install_doxygen
+  - install_arduino_tools
 
   vars:
     cmake_version: "3.27.9"
@@ -236,6 +237,21 @@
     fail:
       msg: "CMake Version Error: Expected {{ cmake_version }} | Found {{ installed_cmake_version.stdout }}"
     when: installed_cmake_version.stdout != cmake_version
+
+-
+  # Install Teensy programming tools
+  # See https://github.com/knickish/teensy_docker.git
+  hosts: localhost
+  connection: local
+  tags:
+  - install_cross_compile_toolchain
+  - install_arduino_tools
+
+  tasks:
+  - name: Install Teensy build dependencies
+    apt:
+      name: avr-libc, binutils-avr, cmake, g++, gcc, gcc-avr, git, libfontconfig1, libusb-dev, libxft-dev, make, unzip, vim, wget, xz-utils
+      update_cache: yes
 
 -
   # install Python packages with pip
