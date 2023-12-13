@@ -190,9 +190,12 @@
   hosts: localhost
   connection: local
   tags:
-  - install_cross_compile_toolchain
-  - install_doxygen
-  - install_fprime_tools
+    - install_fprime_tools
+    - install_cross_compile_toolchain
+    - install_doxygen
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
 
   vars:
     cmake_version: "3.27.9"
@@ -244,8 +247,11 @@
   hosts: localhost
   connection: local
   tags:
-  - install_cross_compile_toolchain
-  - install_fprime_tools
+    - install_fprime_tools
+    - install_cross_compile_toolchain
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
 
   tasks:
   - name: Install Teensy build dependencies
@@ -260,11 +266,16 @@
   gather_facts: yes
   tags:
     - install_fprime_tools
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
 
   vars:
     fprime_version: "v3.4.0"
     arduino_cli_cmake_wrapper_version: "94c3145e5ea4a0a48dc3f70560dfb8a"
     fprime_led_blinker_version: "{{ fprime_version }}"
+    fprime_arduino_version: "dbef42a1ea5bfab84930538cbb53fed90af77406"
+    fprime_baremetal_reference_version: "cb7c0771c535f7583bbac7eecd78997246e4c003"
 
   tasks:
   - name: Update OS to point python to python3
@@ -288,43 +299,60 @@
   - name: Install fprime python packages & dependencies
     pip:
       requirements: https://raw.githubusercontent.com/nasa/fprime/{{ fprime_version }}/requirements.txt
+
+  # Initialize LED-blinker
   - name: Clone fprime led blinker repo
     shell:
       cmd: git clone --recursive https://github.com/fprime-community/fprime-workshop-led-blinker.git
       chdir: /home/kasm-default-profile/
       executable: /bin/bash
-  - name: Checkout {{ fprime_led_blinker_version }} in fprime led blinker repo
+  - name: Checkout {{ fprime_led_blinker_version }} in fprime-workshop-led-blinker repo
     shell:
       cmd: git checkout {{ fprime_led_blinker_version }}
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
-  - name: Fetch fprime submodule
+  - name: Fetch fprime-workshop-led-blinker/fprime submodule
     shell:
       cmd: git fetch
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
       executable: /bin/bash
-  - name: Checkout {{ fprime_version }} in fprime submodule
+  - name: Checkout {{ fprime_version }} in fprime-workshop-led-blinker/fprime submodule
     shell:
       cmd: git checkout {{ fprime_version }}
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
       executable: /bin/bash
-  - name: Initialize submodules in fprime submodule
+
+  # Initialize baremetal-reference
+  - name: Clone fprime-baremetal-reference repo
     shell:
-      cmd: git submodule update --init --recursive
-      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
+      cmd: git clone --recursive https://github.com/fprime-community/fprime-baremetal-reference.git
+      chdir: /home/kasm-default-profile/
       executable: /bin/bash
-  - name: Generate fprime led blinker unit tests
+  - name: Checkout {{ fprime_baremetal_reference_version }} in fprime-baremetal-reference repo
     shell:
-      cmd: fprime-util generate --ut
-      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
+      cmd: git checkout {{ fprime_baremetal_reference_version }}
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference
       executable: /bin/bash
-  - name: Build fprime led blinker unit tests
+  - name: Fetch fprime-baremetal-reference/fprime submodule
     shell:
-      cmd: fprime-util check 1> /tmp/fprime_workshop_led_blinker_build_output.txt
-      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
+      cmd: git fetch
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
       executable: /bin/bash
-  - name: Delete fprime led blinker repo
-    shell: rm -rf /home/kasm-default-profile/fprime-workshop-led-blinker
+  - name: Checkout {{ fprime_version }} in fprime-baremetal-reference/fprime
+    shell:
+      cmd: git checkout {{ fprime_version }}
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
+      executable: /bin/bash
+  - name: Fetch fprime-arduino submodule in fprime-baremetal-reference/lib/arduino/fprime-arduino
+    shell:
+      cmd: git fetch
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/lib/arduino/fprime-arduino
+      executable: /bin/bash
+  - name: Checkout {{ fprime_arduino_version }} in fprime-baremetal-reference/lib/arduino/fprime-arduino
+    shell:
+      cmd: git checkout {{ fprime_arduino_version }}
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/lib/arduino/fprime-arduino
+      executable: /bin/bash
 
 -
   # install arduino tools
@@ -333,6 +361,9 @@
   gather_facts: yes
   tags:
     - install_fprime_tools
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
 
   vars:
     arduino_ide_version: "2.2.1"
@@ -451,6 +482,56 @@
       creates: /opt/{{ arduino_ide_bin_directory }}/LICENSE.electron.txt
   - name: Create symlink for Arduino IDE binary in /usr/local/bin
     shell: ln -srv /opt/{{ arduino_ide_bin_directory }}/arduino-ide /usr/local/bin/arduino-ide
+
+-
+  # build LED blinker
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags:
+    - build_led_blinker
+
+  tasks:
+  - name: Initialize submodules in fprime-workshop-led-blinker/fprime
+    shell:
+      cmd: git submodule update --init --recursive
+      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
+      executable: /bin/bash
+  - name: Generate fprime led blinker unit tests
+    shell:
+      cmd: fprime-util generate --ut
+      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
+      executable: /bin/bash
+  - name: Build fprime led blinker unit tests
+    shell:
+      cmd: fprime-util check 1> /tmp/fprime_workshop_led_blinker_build_output.txt
+      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
+      executable: /bin/bash
+
+-
+  # build baremetal-reference
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags:
+    - build_baremetal_reference
+
+  tasks:
+  - name: Initialize submodules in fprime-baremetal-reference/fprime
+    shell:
+      cmd: git submodule update --init --recursive
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
+      executable: /bin/bash
+  - name: Generate fprime-baremetal-reference build cache
+    shell:
+      cmd: fprime-util generate
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference
+      executable: /bin/bash
+  - name: Build fprime-baremetal-reference
+    shell:
+      cmd: fprime-util build -j4
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference
+      executable: /bin/bash
 
 -
   # add default user to dialout group
