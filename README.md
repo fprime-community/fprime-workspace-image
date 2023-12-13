@@ -30,6 +30,7 @@ This repo provides the source code for building an Immutable-Infrastructure-as-C
     - [Pint](https://pint.readthedocs.io/en/stable/)
     - [pySerial](https://github.com/pyserial/pyserial)
 - Arduino tools for building fprime for embedded platforms
+    - [Arduino IDE](https://github.com/arduino/arduino-ide) 2.2.1
     - [Arduino CLI](https://github.com/arduino/arduino-cli) 0.33.1
     - [Arduino CLI CMake Wrapper](https://github.com/SterlingPeet/arduino-cli-cmake-wrapper)
     - [Arduino Pico](https://github.com/earlephilhower/arduino-pico) 3.3.0
