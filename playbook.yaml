@@ -265,7 +265,6 @@
     fprime_version: "v3.4.0"
     arduino_cli_cmake_wrapper_version: "94c3145e5ea4a0a48dc3f70560dfb8a"
     fprime_led_blinker_version: "{{ fprime_version }}"
-    fprime_baremetal_reference_version: "cb7c0771c535f7583bbac7eecd78997246e4c003"
 
   tasks:
   - name: Update OS to point python to python3
@@ -289,8 +288,6 @@
   - name: Install fprime python packages & dependencies
     pip:
       requirements: https://raw.githubusercontent.com/nasa/fprime/{{ fprime_version }}/requirements.txt
-
-  # led-blinker
   - name: Clone fprime led blinker repo
     shell:
       cmd: git clone --recursive https://github.com/fprime-community/fprime-workshop-led-blinker.git
@@ -328,45 +325,6 @@
       executable: /bin/bash
   - name: Delete fprime led blinker repo
     shell: rm -rf /home/kasm-default-profile/fprime-workshop-led-blinker
-
-  # baremetal-reference
-  - name: Clone fprime-baremetal-reference repo
-    shell:
-      cmd: git clone --recursive https://github.com/fprime-community/fprime-baremetal-reference.git
-      chdir: /home/kasm-default-profile/
-      executable: /bin/bash
-  - name: Checkout {{ fprime_baremetal_reference_version }} in fprime-baremetal-reference repo
-    shell:
-      cmd: git checkout {{ fprime_baremetal_reference_version }}
-      chdir: /home/kasm-default-profile/fprime-baremetal-reference
-      executable: /bin/bash
-  - name: Fetch fprime submodule in fprime-baremetal-reference
-    shell:
-      cmd: git fetch
-      chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
-      executable: /bin/bash
-  - name: Checkout {{ fprime_version }} in fprime-baremetal-reference/fprime
-    shell:
-      cmd: git checkout {{ fprime_version }}
-      chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
-      executable: /bin/bash
-  - name: Initialize submodules in fprime-baremetal-reference/fprime
-    shell:
-      cmd: git submodule update --init --recursive
-      chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
-      executable: /bin/bash
-  - name: Generate fprime-baremetal-reference build cache
-    shell:
-      cmd: fprime-util generate
-      chdir: /home/kasm-default-profile/fprime-baremetal-reference
-      executable: /bin/bash
-  - name: Build fprime-baremetal-reference
-    shell:
-      cmd: fprime-util build -j4
-      chdir: /home/kasm-default-profile/fprime-baremetal-reference
-      executable: /bin/bash
-  - name: Delete fprime-baremetal-reference repo
-    shell: rm -rf /home/kasm-default-profile/fprime-baremetal-reference
 
 -
   # install arduino tools
