@@ -532,6 +532,11 @@
       cmd: fprime-util build -j4
       chdir: /home/kasm-default-profile/fprime-baremetal-reference
       executable: /bin/bash
+  - name: Delete fprime-baremetal-reference
+    shell:
+      cmd: rm -rf fprime-baremetal-reference
+      chdir: /home/kasm-default-profile
+      executable: /bin/bash
 
 -
   # add default user to dialout group
