@@ -192,7 +192,7 @@
   tags:
   - install_cross_compile_toolchain
   - install_doxygen
-  - install_arduino_tools
+  - install_fprime_tools
 
   vars:
     cmake_version: "3.27.9"
@@ -245,7 +245,7 @@
   connection: local
   tags:
   - install_cross_compile_toolchain
-  - install_arduino_tools
+  - install_fprime_tools
 
   tasks:
   - name: Install Teensy build dependencies
@@ -259,7 +259,7 @@
   connection: local
   gather_facts: yes
   tags:
-    - install_arduino_tools
+    - install_fprime_tools
 
   vars:
     fprime_version: "v3.4.0"
@@ -332,7 +332,7 @@
   connection: local
   gather_facts: yes
   tags:
-    - install_arduino_tools
+    - install_fprime_tools
 
   vars:
     arduino_ide_version: "2.2.1"
@@ -458,7 +458,7 @@
   connection: local
   gather_facts: yes
   tags:
-    - install_arduino_tools
+    - install_fprime_tools
     - install_minicom
 
   tasks:
