@@ -6,7 +6,7 @@ repository, to include other projects owned and/or maintained by Kasm Technologi
 
 # MIT License
 
-Copyright (c) 2022 Contributors of kasm-fprime-workspace
+Copyright (c) 2022 Contributors of fprime-workspace-image
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,6 +1,8 @@
 FROM kasmweb/core-ubuntu-jammy:1.13.0
 USER root
 
+LABEL org.opencontainers.image.source="https://github.com/fprime-community/fprime-workspace-image"
+
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 ENV INST_SCRIPTS $STARTUPDIR/install

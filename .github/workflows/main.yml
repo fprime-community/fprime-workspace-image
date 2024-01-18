@@ -32,6 +32,9 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    permissions:
+      packages: write
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -54,7 +57,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_AUTH_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build image
         uses: docker/build-push-action@v4.0.0
