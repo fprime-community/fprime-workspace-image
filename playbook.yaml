@@ -288,43 +288,6 @@
   - name: Install fprime python packages & dependencies
     pip:
       requirements: https://raw.githubusercontent.com/nasa/fprime/{{ fprime_version }}/requirements.txt
-  - name: Clone fprime led blinker repo
-    shell:
-      cmd: git clone --recursive https://github.com/fprime-community/fprime-tutorial-led-blinker.git
-      chdir: /home/kasm-default-profile/
-      executable: /bin/bash
-  - name: Checkout {{ fprime_led_blinker_version }} in fprime led blinker repo
-    shell:
-      cmd: git checkout {{ fprime_led_blinker_version }}
-      chdir: /home/kasm-default-profile/fprime-tutorial-led-blinker
-      executable: /bin/bash
-  - name: Fetch fprime submodule
-    shell:
-      cmd: git fetch
-      chdir: /home/kasm-default-profile/fprime-tutorial-led-blinker/fprime
-      executable: /bin/bash
-  - name: Checkout {{ fprime_version }} in fprime submodule
-    shell:
-      cmd: git checkout {{ fprime_version }}
-      chdir: /home/kasm-default-profile/fprime-tutorial-led-blinker/fprime
-      executable: /bin/bash
-  - name: Initialize submodules in fprime submodule
-    shell:
-      cmd: git submodule update --init --recursive
-      chdir: /home/kasm-default-profile/fprime-tutorial-led-blinker/fprime
-      executable: /bin/bash
-  - name: Generate fprime led blinker unit tests
-    shell:
-      cmd: fprime-util generate --ut
-      chdir: /home/kasm-default-profile/fprime-tutorial-led-blinker
-      executable: /bin/bash
-  - name: Build fprime led blinker unit tests
-    shell:
-      cmd: fprime-util check 1> /tmp/fprime_tutorial_led_blinker_build_output.txt
-      chdir: /home/kasm-default-profile/fprime-tutorial-led-blinker
-      executable: /bin/bash
-  - name: Delete fprime led blinker repo
-    shell: rm -rf /home/kasm-default-profile/fprime-tutorial-led-blinker
 
 -
   # install arduino tools
