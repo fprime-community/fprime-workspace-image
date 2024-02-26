@@ -39,6 +39,12 @@
     lineinfile:
       path: "/etc/skel/.profile"
       line: 'export PS1="\[\033[00;32m\][\w]\$\[\033[00m\] "'
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
   # Handlers: the list of handlers that are executed as a notify 
   #           key from a task
@@ -64,6 +70,12 @@
     apt:
       name: build-essential
       update_cache: yes
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install OpenJDK 11
@@ -84,6 +96,12 @@
     shell: update-alternatives --install /usr/bin/java java /opt/jdk-11/bin/java 100
   - name: Update alternatives so the command, javac, points to installed jdk
     shell: update-alternatives --install /usr/bin/javac javac /opt/jdk-11/bin/javac 100
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install firefox
@@ -115,6 +133,14 @@
   - name: Update apt packages
     apt:
       update_cache: yes
+
+  tasks:
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
   roles:
     - role: staticdev.firefox
@@ -184,6 +210,12 @@
       src: /home/kasm-default-profile/install_files/.gitconfig
       dest: /home/kasm-default-profile/.gitconfig
       remote_src: yes
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install Cross-compile toolchain for embedded Linux target
@@ -237,6 +269,18 @@
     fail:
       msg: "CMake Version Error: Expected {{ cmake_version }} | Found {{ installed_cmake_version.stdout }}"
     when: installed_cmake_version.stdout != cmake_version
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # Install Teensy programming tools
@@ -252,6 +296,12 @@
     apt:
       name: avr-libc, binutils-avr, cmake, g++, gcc, gcc-avr, git, libfontconfig1, libusb-dev, libxft-dev, make, unzip, vim, wget, xz-utils
       update_cache: yes
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install Python packages with pip
@@ -325,6 +375,12 @@
       executable: /bin/bash
   - name: Delete fprime led blinker repo
     shell: rm -rf /home/kasm-default-profile/fprime-workshop-led-blinker
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install arduino tools
@@ -433,6 +489,12 @@
     copy:
       src: /home/kasm-default-profile/install_files/99-adafruit-boards.rules
       dest: /etc/udev/rules.d
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # add default user to dialout group
@@ -451,6 +513,12 @@
       groups: "dialout"
       state: present
       remove: yes
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install Minicom from debian package
@@ -462,6 +530,12 @@
   tasks:
   - name: Install Minicom debian package from install_files
     shell: dpkg -i /home/kasm-default-profile/install_files/minicom_2.7.1-1.1_amd64.deb
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install Doctools
@@ -498,6 +572,12 @@
       cmd: cmake -G "Unix Makefiles" .. && make > /tmp/doxygen_build_output.txt 2>&1 && make install
       chdir: /opt/doxygen-{{ doxygen_version }}/build
       executable: /bin/bash
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 - 
   # install sudo for the vs-code role below 
@@ -513,6 +593,12 @@
       path: "/etc/sudoers"
       line: "Defaults        env_keep += \"DONT_PROMPT_WSL_INSTALL\""
     when: wsl2_environment
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
 # add dev user to give vs code somewhere to install extensions
@@ -523,6 +609,12 @@
     user:
       name: dev
       uid: 1002
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install the remainder of the tools
@@ -565,6 +657,12 @@
       name: dev
       state: absent
       remove: yes 
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 # Three dots indicate the end of a YAML document
 ...
