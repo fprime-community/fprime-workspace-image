@@ -39,6 +39,12 @@
     lineinfile:
       path: "/etc/skel/.profile"
       line: 'export PS1="\[\033[00;32m\][\w]\$\[\033[00m\] "'
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
   # Handlers: the list of handlers that are executed as a notify 
   #           key from a task
@@ -64,26 +70,12 @@
     apt:
       name: build-essential
       update_cache: yes
-
--
-  # install OpenJDK 11
-  hosts: localhost
-  connection: local
-  tasks:
-  - name: Download OpenJDK 11 tarball
-    shell: wget https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz -O /home/kasm-default-profile/openjdk-11+28_linux-x64_bin.tar.gz
-  - name: Extract OpenJDK 11 binaries
-    unarchive:
-      src: /home/kasm-default-profile/openjdk-11+28_linux-x64_bin.tar.gz
-      dest: /opt
-      remote_src: yes
-      creates: /opt/jdk-11/release
-  - name: Delete OpenJDK 11 tarball
-    shell: rm /home/kasm-default-profile/openjdk-11+28_linux-x64_bin.tar.gz
-  - name: Update alternatives so the command, java, points to installed jdk
-    shell: update-alternatives --install /usr/bin/java java /opt/jdk-11/bin/java 100
-  - name: Update alternatives so the command, javac, points to installed jdk
-    shell: update-alternatives --install /usr/bin/javac javac /opt/jdk-11/bin/javac 100
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install firefox
@@ -116,6 +108,14 @@
     apt:
       update_cache: yes
 
+  tasks:
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
+
   roles:
     - role: staticdev.firefox
 
@@ -127,7 +127,7 @@
   tags: install_utilities
 
   vars:
-    git_version: "2.43.0"
+    git_version: "2.34.1"
     git_version_to_install: "1:{{ git_version }}-0ppa1~ubuntu22.04.1"
     keychain_version: "2.8.5"
     keychain_version_to_install: "{{ keychain_version }}-2"
@@ -138,7 +138,7 @@
     shell: add-apt-repository ppa:git-core/ppa
   - name: Install git
     apt:
-      name: "git={{ git_version_to_install }}"
+      name: "git"
   - name: Install Git Bash Completion
     apt:
       name: bash-completion
@@ -184,6 +184,12 @@
       src: /home/kasm-default-profile/install_files/.gitconfig
       dest: /home/kasm-default-profile/.gitconfig
       remote_src: yes
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install Cross-compile toolchain for embedded Linux target
@@ -237,6 +243,18 @@
     fail:
       msg: "CMake Version Error: Expected {{ cmake_version }} | Found {{ installed_cmake_version.stdout }}"
     when: installed_cmake_version.stdout != cmake_version
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # Install Teensy programming tools
@@ -252,6 +270,12 @@
     apt:
       name: avr-libc, binutils-avr, cmake, g++, gcc, gcc-avr, git, libfontconfig1, libusb-dev, libxft-dev, make, unzip, vim, wget, xz-utils
       update_cache: yes
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install Python packages with pip
@@ -298,12 +322,8 @@
     - install_fprime_tools
 
   vars:
-    arduino_ide_version: "2.2.1"
-    arduino_ide_bin_directory: "arduino-ide_{{ arduino_ide_version }}_Linux_64bit"
     arduino_cli_version: "0.33.1"
     arduino_pico_version: "3.3.0"
-    arduino_esp32_version: "2.0.9"
-    adafruit_samd_version: "1.7.13"
 
   tasks:
   - name: Download Arduino CLI tarball
@@ -338,8 +358,6 @@
     shell: arduino-cli config init
   - name: Add URL for Arduino-Pico package index to Board Manager using arduino-cli
     shell: arduino-cli config add board_manager.additional_urls https://github.com/earlephilhower/arduino-pico/releases/download/{{ arduino_pico_version }}/package_rp2040_index.json
-  - name: Add URL for Arduino-ESP32 package index to Board Manager using arduino-cli
-    shell: arduino-cli config add board_manager.additional_urls https://github.com/espressif/arduino-esp32/releases/download/{{ arduino_esp32_version }}/package_esp32_index.json
   - name: Add URL for Adafruit package index to Board Manager using arduino-cli
     shell: arduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/adafruit/arduino-board-index/8a67f577257b5f3e958ce32f18b55a8491f6d06f/package_adafruit_index.json
   - name: Add URL for Teensy package index to Board Manager using arduino-cli
@@ -348,10 +366,6 @@
     shell: arduino-cli core update-index
   - name: Install package index for Arduino-Pico using arduino-cli
     shell: arduino-cli core install rp2040:rp2040@{{ arduino_pico_version }}
-  - name: Install package index for Arduino-ESP32 using arduino-cli
-    shell: arduino-cli core install esp32:esp32@{{ arduino_esp32_version }}
-  - name: Install package index for Adafruit-SAMD using arduino-cli
-    shell: arduino-cli core install adafruit:samd@{{ adafruit_samd_version }}
   - name: Install package index for Teensy using arduino-cli
     shell: arduino-cli core install teensy:avr
   - name: Install RadioHead using arduino-cli
@@ -359,33 +373,13 @@
   - name: Get Arduino-Pico version
     shell: arduino-cli core list | grep rp2040 | awk '{ print $2'}
     register: installed_arduino_pico_version
-  - name: Get Arduino-ESP32 version
-    shell: arduino-cli core list | grep esp32 | awk '{ print $2'}
-    register: installed_arduino_esp32_version
-  - name: Get Adafruit-SAMD version
-    shell: arduino-cli core list | grep adafruit | awk '{ print $2'}
-    register: installed_adafruit_samd_version
   - name: Display Arduino-Pico version
     debug:
       msg: "Arduino-Pico version = {{ installed_arduino_pico_version.stdout }}"
-  - name: Display Arduino-ESP32 version
-    debug:
-      msg: "Arduino-ESP32 version = {{ installed_arduino_esp32_version.stdout }}"
-  - name: Display Adafruit board index version
-    debug:
-      msg: "Adafruit-SAMD version = {{ installed_adafruit_samd_version.stdout }}"
   - name: Test Arduino-Pico version
     fail:
       msg: "Arduino-Pico Version Error: Expected {{ arduino_pico_version }} | Found {{ installed_arduino_pico_version.stdout }}"
     when: installed_arduino_pico_version.stdout != arduino_pico_version
-  - name: Test Arduino-ESP32 version
-    fail:
-      msg: "Arduino-ESP32 Version Error: Expected {{ arduino_esp32_version }} | Found {{ installed_arduino_esp32_version.stdout }}"
-    when: installed_arduino_esp32_version.stdout != arduino_esp32_version
-  - name: Test Adafruit board index version
-    fail:
-      msg: "Adafruit-SAMD Version Error: Expected {{ adafruit_samd_version }} | Found {{ installed_adafruit_samd_version.stdout }}"
-    when: installed_adafruit_samd_version.stdout != adafruit_samd_version
   - name: Install Teensy rules to /etc/udev/rules.d
     copy:
       src: /home/kasm-default-profile/install_files/00-teensy.rules
@@ -398,22 +392,12 @@
     copy:
       src: /home/kasm-default-profile/install_files/99-adafruit-boards.rules
       dest: /etc/udev/rules.d
-  - name: Download Arduino IDE zip
-    get_url:
-      url: https://github.com/arduino/arduino-ide/releases/download/{{ arduino_ide_version }}/{{ arduino_ide_bin_directory }}.zip
-      dest: /home/kasm-default-profile/install_files
-  - name: Install Unzip
-    apt:
-      name: unzip
-      update_cache: yes
-  - name: Unarchive Arduino IDE zip
-    unarchive:
-      src: /home/kasm-default-profile/install_files/{{ arduino_ide_bin_directory }}.zip
-      dest: /opt/
-      remote_src: yes
-      creates: /opt/{{ arduino_ide_bin_directory }}/LICENSE.electron.txt
-  - name: Create symlink for Arduino IDE binary in /usr/local/bin
-    shell: ln -srv /opt/{{ arduino_ide_bin_directory }}/arduino-ide /usr/local/bin/arduino-ide
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # add default user to dialout group
@@ -432,6 +416,12 @@
       groups: "dialout"
       state: present
       remove: yes
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install Minicom from debian package
@@ -443,6 +433,12 @@
   tasks:
   - name: Install Minicom debian package from install_files
     shell: dpkg -i /home/kasm-default-profile/install_files/minicom_2.7.1-1.1_amd64.deb
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install Doctools
@@ -479,6 +475,12 @@
       cmd: cmake -G "Unix Makefiles" .. && make > /tmp/doxygen_build_output.txt 2>&1 && make install
       chdir: /opt/doxygen-{{ doxygen_version }}/build
       executable: /bin/bash
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 - 
   # install sudo for the vs-code role below 
@@ -494,6 +496,12 @@
       path: "/etc/sudoers"
       line: "Defaults        env_keep += \"DONT_PROMPT_WSL_INSTALL\""
     when: wsl2_environment
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
 # add dev user to give vs code somewhere to install extensions
@@ -504,6 +512,12 @@
     user:
       name: dev
       uid: 1002
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 -
   # install the remainder of the tools
@@ -546,6 +560,12 @@
       name: dev
       state: absent
       remove: yes 
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
 
 # Three dots indicate the end of a YAML document
 ...
