@@ -77,10 +77,19 @@
     debug:
       msg: "{{ disk_usage.stdout }}"
 
+
 -
-  # install OpenJDK 11
+  # install fprime-visual tools
   hosts: localhost
   connection: local
+  gather_facts: yes
+  tags:
+    - install_fprime_tools
+
+  vars:
+    fprime_layout_version: "v1.0.3"
+    sbt_version: "1.9.9"
+
   tasks:
   - name: Download OpenJDK 11 tarball
     shell: wget https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz -O /home/kasm-default-profile/openjdk-11+28_linux-x64_bin.tar.gz
@@ -96,6 +105,52 @@
     shell: update-alternatives --install /usr/bin/java java /opt/jdk-11/bin/java 100
   - name: Update alternatives so the command, javac, points to installed jdk
     shell: update-alternatives --install /usr/bin/javac javac /opt/jdk-11/bin/javac 100
+  - name: Install zip
+    apt:
+      name: "zip"
+      update_cache: yes
+  - name: Download sbt {{ sbt_version }} tarball # https://github.com/sbt/sbt/releases/download/v1.9.9/sbt-1.9.9.tgz
+    shell:
+      cmd: wget https://github.com/sbt/sbt/releases/download/v{{ sbt_version }}/sbt-{{ sbt_version }}.tgz
+      chdir: /home/kasm-default-profile/install_files
+      executable: /bin/bash
+  - name: Extract sbt
+    unarchive:
+      src: /home/kasm-default-profile/install_files/sbt-{{ sbt_version }}.tgz
+      dest: /home/kasm-default-profile/install_files
+      remote_src: yes
+      creates: /home/kasm-default-profile/install_files/sbt/LICENSE
+  - name: Copy sbt binary to /usr/local/bin
+    copy:
+      src: /home/kasm-default-profile/install_files/sbt/bin/sbt
+      dest: /usr/local/bin/sbt
+      remote_src: yes
+      owner: root
+      group: root
+      mode: '0755'
+  - name: Clone fprime-layout
+    shell:
+      cmd: git clone https://github.com/fprime-community/fprime-layout.git
+      chdir: /home/kasm-default-profile/install_files
+      executable: /bin/bash
+  - name: Checkout fprime-layout {{ fprime_layout_version }}
+    shell:
+      cmd: git checkout {{ fprime_layout_version }}
+      chdir: /home/kasm-default-profile/install_files/fprime-layout
+      executable: /bin/bash
+  - name: copy and change permissions for fprime-layout install script
+    copy:
+      src: /home/kasm-default-profile/install_files/fprime-layout/install
+      dest: /home/kasm-default-profile/install_files/fprime-layout/install.sh
+      remote_src: yes
+      owner: root
+      group: root
+      mode: '0755'
+  - name: Install fprime-layout tools in /usr/local/bin
+    shell:
+      cmd: ./install.sh /usr/local/bin
+      chdir: /home/kasm-default-profile/install_files/fprime-layout
+      executable: /bin/bash
   - name: Get disk usage
     shell: df -h
     register: disk_usage
