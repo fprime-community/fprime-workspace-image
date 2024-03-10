@@ -390,6 +390,20 @@
       cmd: fprime-util check
       chdir: /home/kasm-default-profile/fprime-tutorial-math-component
       executable: /bin/bash
+    failed_when: false
+    changed_when: false
+    register: fprime_math_ut_output
+  - name: Display fprime math component unit tests stdout
+    debug:
+      msg: "{{ fprime_math_ut_output.stdout }}"
+  - name: Display fprime math component unit tests stderr
+    debug:
+      msg: "{{ fprime_math_ut_output.stderr }}"
+  - name: Display fprime math component unit tests log
+    shell:
+      cmd: cat ./build-fprime-automatic-native-ut/Testing/Temporary/LastTest.log
+      chdir: /home/kasm-default-profile/fprime-tutorial-math-component
+      executable: /bin/bash
   - name: Delete fprime math component repo
     shell: rm -rf /home/kasm-default-profile/fprime-tutorial-math-component
   - name: Get disk usage
