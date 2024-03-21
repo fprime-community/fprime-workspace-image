@@ -78,6 +78,32 @@
       msg: "{{ disk_usage.stdout }}"
 
 -
+  # install OpenJDK 11
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Download OpenJDK 11 tarball
+    shell: wget https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz -O /home/kasm-default-profile/openjdk-11+28_linux-x64_bin.tar.gz
+  - name: Extract OpenJDK 11 binaries
+    unarchive:
+      src: /home/kasm-default-profile/openjdk-11+28_linux-x64_bin.tar.gz
+      dest: /opt
+      remote_src: yes
+      creates: /opt/jdk-11/release
+  - name: Delete OpenJDK 11 tarball
+    shell: rm /home/kasm-default-profile/openjdk-11+28_linux-x64_bin.tar.gz
+  - name: Update alternatives so the command, java, points to installed jdk
+    shell: update-alternatives --install /usr/bin/java java /opt/jdk-11/bin/java 100
+  - name: Update alternatives so the command, javac, points to installed jdk
+    shell: update-alternatives --install /usr/bin/javac javac /opt/jdk-11/bin/javac 100
+  - name: Get disk usage
+    shell: df -h
+    register: disk_usage
+  - name: Display disk usage
+    debug:
+      msg: "{{ disk_usage.stdout }}"
+
+-
   # install firefox
   hosts: localhost
   connection: local
