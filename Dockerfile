@@ -19,7 +19,7 @@ RUN apt update && apt -y install software-properties-common && add-apt-repositor
 
 # run Ansible commands
 COPY ./requirements.yaml ./playbook.yaml ./
-RUN ansible-galaxy install -r requirements.yaml && ansible-playbook -i,localhost playbook.yaml --tags "install_arduino_tools, build_baremetal_reference" && rm -f ./*.yaml
+RUN ansible-galaxy install -r requirements.yaml && ansible-playbook -i,localhost playbook.yaml --tags "build_led_blinker" && rm -f ./*.yaml
 
 # Custom Desktop Background - replace ingenuity_helicopter_on_mars.png on disk with your own background image
 COPY ./ingenuity_helicopter_on_mars.png /usr/share/extra/backgrounds/bg_default.png
