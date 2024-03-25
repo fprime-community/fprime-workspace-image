@@ -372,6 +372,7 @@
     arduino_pico_version: "3.3.0"
     arduino_esp32_version: "2.0.9"
     adafruit_samd_version: "1.7.13"
+    teensy_avr_version: "1.58.1"
 
   tasks:
   - name: Download Arduino CLI tarball
@@ -421,7 +422,7 @@
   - name: Install package index for Adafruit-SAMD using arduino-cli
     shell: arduino-cli core install adafruit:samd@{{ adafruit_samd_version }}
   - name: Install package index for Teensy using arduino-cli
-    shell: arduino-cli core install teensy:avr
+    shell: arduino-cli core install teensy:avr@{{ teensy_avr_version }}
   - name: Install RadioHead using arduino-cli
     shell: arduino-cli lib install RadioHead
   - name: Get Arduino-Pico version
