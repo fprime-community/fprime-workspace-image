@@ -372,7 +372,7 @@
     arduino_pico_version: "3.3.0"
     arduino_esp32_version: "2.0.9"
     adafruit_samd_version: "1.7.13"
-    teensy_avr_version: "1.58.2"
+    teensy_avr_version: "1.57.3"
 
   tasks:
   - name: Download Arduino CLI tarball
