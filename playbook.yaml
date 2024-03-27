@@ -259,6 +259,31 @@
       name: avr-libc, binutils-avr, cmake, g++, gcc, gcc-avr, git, libfontconfig1, libusb-dev, libxft-dev, make, unzip, vim, wget, xz-utils
       update_cache: yes
 
+- 
+  # install sudo for the vs-code role below 
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Install Sudo
+    apt:
+      name: sudo
+      update_cache: yes
+  - name: Preserve DONT_PROMPT_WSL_INSTALL in sudoers
+    lineinfile:
+      path: "/etc/sudoers"
+      line: "Defaults        env_keep += \"DONT_PROMPT_WSL_INSTALL\""
+    when: wsl2_environment
+
+-
+# add dev user to give vs code somewhere to install extensions
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Add dev user
+    user:
+      name: dev
+      uid: 1002
+
 -
   # install Python packages with pip
   hosts: localhost
@@ -306,21 +331,25 @@
       cmd: git clone --recursive https://github.com/fprime-community/fprime-workshop-led-blinker.git
       chdir: /home/kasm-default-profile/
       executable: /bin/bash
+    become_user: dev
   - name: Checkout {{ fprime_led_blinker_version }} in fprime-workshop-led-blinker repo
     shell:
       cmd: git checkout {{ fprime_led_blinker_version }}
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
+    become_user: dev
   - name: Fetch fprime-workshop-led-blinker/fprime submodule
     shell:
       cmd: git fetch
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
       executable: /bin/bash
+    become_user: dev
   - name: Checkout {{ fprime_version }} in fprime-workshop-led-blinker/fprime submodule
     shell:
       cmd: git checkout {{ fprime_version }}
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
       executable: /bin/bash
+    become_user: dev
 
   # Initialize baremetal-reference
   - name: Clone fprime-baremetal-reference repo
@@ -328,31 +357,37 @@
       cmd: git clone --recursive https://github.com/mdrs-community/fprime-baremetal-reference.git
       chdir: /home/kasm-default-profile/
       executable: /bin/bash
+    become_user: dev
   - name: Checkout {{ fprime_baremetal_reference_version }} in fprime-baremetal-reference repo
     shell:
       cmd: git checkout {{ fprime_baremetal_reference_version }}
       chdir: /home/kasm-default-profile/fprime-baremetal-reference
       executable: /bin/bash
+    become_user: dev
   - name: Fetch fprime-baremetal-reference/fprime submodule
     shell:
       cmd: git fetch
       chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
       executable: /bin/bash
+    become_user: dev
   - name: Checkout {{ fprime_version }} in fprime-baremetal-reference/fprime
     shell:
       cmd: git checkout {{ fprime_version }}
       chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
       executable: /bin/bash
+    become_user: dev
   - name: Fetch fprime-arduino submodule in fprime-baremetal-reference/lib/arduino/fprime-arduino
     shell:
       cmd: git fetch
       chdir: /home/kasm-default-profile/fprime-baremetal-reference/lib/arduino/fprime-arduino
       executable: /bin/bash
+    become_user: dev
   - name: Checkout {{ fprime_arduino_version }} in fprime-baremetal-reference/lib/arduino/fprime-arduino
     shell:
       cmd: git checkout {{ fprime_arduino_version }}
       chdir: /home/kasm-default-profile/fprime-baremetal-reference/lib/arduino/fprime-arduino
       executable: /bin/bash
+    become_user: dev
 
 -
   # install arduino tools
@@ -498,16 +533,19 @@
       cmd: git submodule update --init --recursive
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
       executable: /bin/bash
+    become_user: dev
   - name: Generate fprime led blinker unit tests
     shell:
       cmd: fprime-util generate --ut
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
+    become_user: dev
   - name: Build fprime led blinker unit tests
     shell:
       cmd: fprime-util check 1> /tmp/fprime_workshop_led_blinker_build_output.txt
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
+    become_user: dev
 
 -
   # build baremetal-reference
@@ -523,21 +561,25 @@
       cmd: git submodule update --init --recursive
       chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
       executable: /bin/bash
+    become_user: dev
   - name: Generate fprime-baremetal-reference build cache
     shell:
       cmd: fprime-util generate
       chdir: /home/kasm-default-profile/fprime-baremetal-reference
       executable: /bin/bash
+    become_user: dev
   - name: Build fprime-baremetal-reference
     shell:
       cmd: fprime-util build -j4
       chdir: /home/kasm-default-profile/fprime-baremetal-reference
       executable: /bin/bash
+    become_user: dev
   - name: Delete fprime-baremetal-reference
     shell:
       cmd: rm -rf fprime-baremetal-reference
       chdir: /home/kasm-default-profile
       executable: /bin/bash
+    become_user: dev
 
 -
   # add default user to dialout group
@@ -603,31 +645,6 @@
       cmd: cmake -G "Unix Makefiles" .. && make > /tmp/doxygen_build_output.txt 2>&1 && make install
       chdir: /opt/doxygen-{{ doxygen_version }}/build
       executable: /bin/bash
-
-- 
-  # install sudo for the vs-code role below 
-  hosts: localhost
-  connection: local
-  tasks:
-  - name: Install Sudo
-    apt:
-      name: sudo
-      update_cache: yes
-  - name: Preserve DONT_PROMPT_WSL_INSTALL in sudoers
-    lineinfile:
-      path: "/etc/sudoers"
-      line: "Defaults        env_keep += \"DONT_PROMPT_WSL_INSTALL\""
-    when: wsl2_environment
-
--
-# add dev user to give vs code somewhere to install extensions
-  hosts: localhost
-  connection: local
-  tasks:
-  - name: Add dev user
-    user:
-      name: dev
-      uid: 1002
 
 -
   # install the remainder of the tools
