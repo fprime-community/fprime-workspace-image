@@ -190,9 +190,12 @@
   hosts: localhost
   connection: local
   tags:
-  - install_cross_compile_toolchain
-  - install_doxygen
-  - install_fprime_tools
+    - install_fprime_tools
+    - install_cross_compile_toolchain
+    - install_doxygen
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
 
   vars:
     cmake_version: "3.27.9"
@@ -244,14 +247,42 @@
   hosts: localhost
   connection: local
   tags:
-  - install_cross_compile_toolchain
-  - install_fprime_tools
+    - install_fprime_tools
+    - install_cross_compile_toolchain
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
 
   tasks:
   - name: Install Teensy build dependencies
     apt:
       name: avr-libc, binutils-avr, cmake, g++, gcc, gcc-avr, git, libfontconfig1, libusb-dev, libxft-dev, make, unzip, vim, wget, xz-utils
       update_cache: yes
+
+- 
+  # install sudo for the vs-code role below 
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Install Sudo
+    apt:
+      name: sudo
+      update_cache: yes
+  - name: Preserve DONT_PROMPT_WSL_INSTALL in sudoers
+    lineinfile:
+      path: "/etc/sudoers"
+      line: "Defaults        env_keep += \"DONT_PROMPT_WSL_INSTALL\""
+    when: wsl2_environment
+
+-
+# add dev user to give vs code somewhere to install extensions
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Add dev user
+    user:
+      name: dev
+      uid: 1002
 
 -
   # install Python packages with pip
@@ -260,11 +291,16 @@
   gather_facts: yes
   tags:
     - install_fprime_tools
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
 
   vars:
     fprime_version: "v3.4.0"
     arduino_cli_cmake_wrapper_version: "94c3145e5ea4a0a48dc3f70560dfb8a"
     fprime_led_blinker_version: "{{ fprime_version }}"
+    fprime_arduino_version: "dbef42a1ea5bfab84930538cbb53fed90af77406"
+    fprime_baremetal_reference_version: "v3.4.0-0.1.1"
 
   tasks:
   - name: Update OS to point python to python3
@@ -288,43 +324,70 @@
   - name: Install fprime python packages & dependencies
     pip:
       requirements: https://raw.githubusercontent.com/nasa/fprime/{{ fprime_version }}/requirements.txt
+
+  # Initialize LED-blinker
   - name: Clone fprime led blinker repo
     shell:
       cmd: git clone --recursive https://github.com/fprime-community/fprime-workshop-led-blinker.git
       chdir: /home/kasm-default-profile/
       executable: /bin/bash
-  - name: Checkout {{ fprime_led_blinker_version }} in fprime led blinker repo
+    become_user: dev
+  - name: Checkout {{ fprime_led_blinker_version }} in fprime-workshop-led-blinker repo
     shell:
       cmd: git checkout {{ fprime_led_blinker_version }}
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
-  - name: Fetch fprime submodule
+    become_user: dev
+  - name: Fetch fprime-workshop-led-blinker/fprime submodule
     shell:
       cmd: git fetch
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
       executable: /bin/bash
-  - name: Checkout {{ fprime_version }} in fprime submodule
+    become_user: dev
+  - name: Checkout {{ fprime_version }} in fprime-workshop-led-blinker/fprime submodule
     shell:
       cmd: git checkout {{ fprime_version }}
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
       executable: /bin/bash
-  - name: Initialize submodules in fprime submodule
+    become_user: dev
+
+  # Initialize baremetal-reference
+  - name: Clone fprime-baremetal-reference repo
     shell:
-      cmd: git submodule update --init --recursive
-      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
+      cmd: git clone --recursive https://github.com/mdrs-community/fprime-baremetal-reference.git
+      chdir: /home/kasm-default-profile/
       executable: /bin/bash
-  - name: Generate fprime led blinker unit tests
+    become_user: dev
+  - name: Checkout {{ fprime_baremetal_reference_version }} in fprime-baremetal-reference repo
     shell:
-      cmd: fprime-util generate --ut
-      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
+      cmd: git checkout {{ fprime_baremetal_reference_version }}
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference
       executable: /bin/bash
-  - name: Build fprime led blinker unit tests
+    become_user: dev
+  - name: Fetch fprime-baremetal-reference/fprime submodule
     shell:
-      cmd: fprime-util check 1> /tmp/fprime_workshop_led_blinker_build_output.txt
-      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
+      cmd: git fetch
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
       executable: /bin/bash
-  - name: Delete fprime led blinker repo
-    shell: rm -rf /home/kasm-default-profile/fprime-workshop-led-blinker
+    become_user: dev
+  - name: Checkout {{ fprime_version }} in fprime-baremetal-reference/fprime
+    shell:
+      cmd: git checkout {{ fprime_version }}
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
+      executable: /bin/bash
+    become_user: dev
+  - name: Fetch fprime-arduino submodule in fprime-baremetal-reference/lib/arduino/fprime-arduino
+    shell:
+      cmd: git fetch
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/lib/arduino/fprime-arduino
+      executable: /bin/bash
+    become_user: dev
+  - name: Checkout {{ fprime_arduino_version }} in fprime-baremetal-reference/lib/arduino/fprime-arduino
+    shell:
+      cmd: git checkout {{ fprime_arduino_version }}
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/lib/arduino/fprime-arduino
+      executable: /bin/bash
+    become_user: dev
 
 -
   # install arduino tools
@@ -333,6 +396,9 @@
   gather_facts: yes
   tags:
     - install_fprime_tools
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
 
   vars:
     arduino_ide_version: "2.2.1"
@@ -341,6 +407,7 @@
     arduino_pico_version: "3.3.0"
     arduino_esp32_version: "2.0.9"
     adafruit_samd_version: "1.7.13"
+    teensy_avr_version: "1.58.2"
 
   tasks:
   - name: Download Arduino CLI tarball
@@ -390,7 +457,7 @@
   - name: Install package index for Adafruit-SAMD using arduino-cli
     shell: arduino-cli core install adafruit:samd@{{ adafruit_samd_version }}
   - name: Install package index for Teensy using arduino-cli
-    shell: arduino-cli core install teensy:avr
+    shell: arduino-cli core install teensy:avr@{{ teensy_avr_version }}
   - name: Install RadioHead using arduino-cli
     shell: arduino-cli lib install RadioHead
   - name: Get Arduino-Pico version
@@ -451,6 +518,68 @@
       creates: /opt/{{ arduino_ide_bin_directory }}/LICENSE.electron.txt
   - name: Create symlink for Arduino IDE binary in /usr/local/bin
     shell: ln -srv /opt/{{ arduino_ide_bin_directory }}/arduino-ide /usr/local/bin/arduino-ide
+
+-
+  # build LED blinker
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags:
+    - build_led_blinker
+
+  tasks:
+  - name: Initialize submodules in fprime-workshop-led-blinker/fprime
+    shell:
+      cmd: git submodule update --init --recursive
+      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker/fprime
+      executable: /bin/bash
+    become_user: dev
+  - name: Generate fprime led blinker unit tests
+    shell:
+      cmd: fprime-util generate --ut
+      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
+      executable: /bin/bash
+    become_user: dev
+  - name: Build fprime led blinker unit tests
+    shell:
+      cmd: fprime-util check 1> /tmp/fprime_workshop_led_blinker_build_output.txt
+      chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
+      executable: /bin/bash
+    become_user: dev
+
+-
+  # build baremetal-reference
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags:
+    - build_baremetal_reference
+
+  tasks:
+  - name: Initialize submodules in fprime-baremetal-reference/fprime
+    shell:
+      cmd: git submodule update --init --recursive
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference/fprime
+      executable: /bin/bash
+    become_user: dev
+  - name: Generate fprime-baremetal-reference build cache
+    shell:
+      cmd: fprime-util generate
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference
+      executable: /bin/bash
+    become_user: dev
+  - name: Build fprime-baremetal-reference
+    shell:
+      cmd: fprime-util build -j4
+      chdir: /home/kasm-default-profile/fprime-baremetal-reference
+      executable: /bin/bash
+    become_user: dev
+  - name: Delete fprime-baremetal-reference
+    shell:
+      cmd: rm -rf fprime-baremetal-reference
+      chdir: /home/kasm-default-profile
+      executable: /bin/bash
+    become_user: dev
 
 -
   # add default user to dialout group
@@ -516,31 +645,6 @@
       cmd: cmake -G "Unix Makefiles" .. && make > /tmp/doxygen_build_output.txt 2>&1 && make install
       chdir: /opt/doxygen-{{ doxygen_version }}/build
       executable: /bin/bash
-
-- 
-  # install sudo for the vs-code role below 
-  hosts: localhost
-  connection: local
-  tasks:
-  - name: Install Sudo
-    apt:
-      name: sudo
-      update_cache: yes
-  - name: Preserve DONT_PROMPT_WSL_INSTALL in sudoers
-    lineinfile:
-      path: "/etc/sudoers"
-      line: "Defaults        env_keep += \"DONT_PROMPT_WSL_INSTALL\""
-    when: wsl2_environment
-
--
-# add dev user to give vs code somewhere to install extensions
-  hosts: localhost
-  connection: local
-  tasks:
-  - name: Add dev user
-    user:
-      name: dev
-      uid: 1002
 
 -
   # install the remainder of the tools
