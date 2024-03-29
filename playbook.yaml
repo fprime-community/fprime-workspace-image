@@ -558,6 +558,60 @@
     become_user: 1000
 
 -
+  # install Cross-compile toolchain for embedded Linux target
+  hosts: localhost
+  connection: local
+  tags:
+    - install_fprime_tools
+    - install_cross_compile_toolchain
+    - install_doxygen
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
+
+  vars:
+    cmake_version: "3.27.9"
+    cmake_bin_directory: "cmake-{{ cmake_version }}-linux-x86_64"
+
+  tasks:
+  - name: Install gcc-arm-linux-gnueabihf with Apt
+    apt:
+      name: gcc-arm-linux-gnueabihf
+      update_cache: yes
+  - name: Install g++-arm-linux-gnueabihf with Apt
+    apt:
+      name: g++-arm-linux-gnueabihf
+      update_cache: yes
+  - name: Install gdb-multiarch with Apt
+    apt:
+      name: gdb-multiarch
+      update_cache: yes
+  - name: Install libssl-dev
+    apt:
+      name: libssl-dev
+      update_cache: yes
+  - name: Download cmake {{ cmake_version }} binary distribution tarball
+    shell: wget https://github.com/Kitware/CMake/releases/download/v{{ cmake_version }}/{{ cmake_bin_directory }}.tar.gz -O /home/kasm-default-profile/{{ cmake_bin_directory }}.tar.gz
+  - name: Extract cmake tarball to /opt
+    unarchive:
+      src: /home/kasm-default-profile/{{ cmake_bin_directory }}.tar.gz
+      dest: /opt
+      remote_src: yes
+      creates: /opt/{{ cmake_bin_directory }}/doc/cmake/Copyright.txt
+  - name: Delete cmake tarball
+    shell: rm /home/kasm-default-profile/{{ cmake_bin_directory }}.tar.gz
+  - name: Get CMake version
+    shell: cmake --version | grep 'cmake version' | awk '{ print $3'}
+    register: installed_cmake_version
+  - name: Display CMake version
+    debug:
+      msg: "cmake = {{ installed_cmake_version.stdout }}"
+  - name: Test CMake version
+    fail:
+      msg: "CMake Version Error: Expected {{ cmake_version }} | Found {{ installed_cmake_version.stdout }}"
+    when: installed_cmake_version.stdout != cmake_version
+
+-
   # re-install Python packages with pip
   hosts: localhost
   connection: local
