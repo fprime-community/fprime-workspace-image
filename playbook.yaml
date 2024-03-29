@@ -558,6 +558,44 @@
     become_user: 1000
 
 -
+  # re-install Python packages with pip
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  tags:
+    - install_fprime_tools
+    - install_arduino_tools
+    - build_led_blinker
+    - build_baremetal_reference
+
+  vars:
+    fprime_version: "v3.4.0"
+    arduino_cli_cmake_wrapper_version: "94c3145e5ea4a0a48dc3f70560dfb8a"
+
+  tasks:
+  - name: Update OS to point python to python3
+    apt:
+      name: python-is-python3
+      update_cache: yes
+  - name: Install pip for python3 with Apt
+    apt:
+      name: python3-pip
+      update_cache: yes
+  - name: Install python packages with pip
+    pip:
+      name:
+        - jupyterlab
+        - notebook
+        - voila
+        - pint
+        - setuptools
+        - git+https://github.com/SterlingPeet/arduino-cli-cmake-wrapper.git@{{ arduino_cli_cmake_wrapper_version }}#egg=arduino-cli-cmake-wrapper
+        - pyserial
+  - name: Install fprime python packages & dependencies
+    pip:
+      requirements: https://raw.githubusercontent.com/nasa/fprime/{{ fprime_version }}/requirements.txt
+
+-
   # re-install arduino tools
   hosts: localhost
   connection: local
