@@ -41,6 +41,23 @@ jobs:
       - name: Checkout github repo
         uses: actions/checkout@v4
 
+      - name: Workaround to free up 5GB of space # see https://github.com/actions/runner-images/issues/709#issuecomment-612569242
+        run: sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      - name: Show disk usage
+        run: df -h
+
+      - name: Build image with fprime projects
+        uses: docker/build-push-action@v5
+        with:
+          file: ./fprime-projects.Dockerfile
+
+      - name: Show disk usage
+        run: df -h
+
+      - name: Purge docker images from system to create space
+        run: docker rmi -f $(docker images -aq)
+
       - name: Docker meta
         id: docker_meta
         uses: docker/metadata-action@v4
@@ -59,12 +76,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Show disk usage
+        run: df -h
+
       - name: Build image
         uses: docker/build-push-action@v5
         with:
           tags: ${{ steps.docker_meta.outputs.tags }} 
           file: ./Dockerfile
-          
+
+      - name: Show disk usage
+        run: df -h
+
       - name: Push image
         uses: docker/build-push-action@v5
         with:
