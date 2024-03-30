@@ -60,14 +60,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build image
-        uses: docker/build-push-action@v4.0.0
+        uses: docker/build-push-action@v5
         with:
           tags: ${{ steps.docker_meta.outputs.tags }} 
           file: ./Dockerfile
           
       - name: Push image
-        uses: docker/build-push-action@v4.0.0
+        uses: docker/build-push-action@v5
         with:
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           file: ./Dockerfile    
