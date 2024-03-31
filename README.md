@@ -46,6 +46,7 @@ This repo provides the source code for building an Immutable-Infrastructure-as-C
 1. Docker
 2. Git
 3. A Bash terminal (standard terminal environment for *nix and macOS).
+4. [UDEV Rules for Teensy boards](https://www.pjrc.com/teensy/00-teensy.rules) placed in `/etc/udev/rules.d/00-teensy.rules`. See https://www.pjrc.com/teensy/td_download.html
 
 NOTE: To Windows 10 users: Windows Command Prompt will not satisfy this dependency. We recommend installing [Ubuntu on WSL2 for Windows 10](https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-10).
 
