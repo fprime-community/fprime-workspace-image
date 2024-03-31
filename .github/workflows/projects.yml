@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Build and Publish to GHCR
+name: Build FPrime Projects
 
 # Controls when the workflow will run
 on:
@@ -41,45 +41,17 @@ jobs:
       - name: Checkout github repo
         uses: actions/checkout@v4
 
-      - name: Workaround to free up 5GB of space # see https://github.com/actions/runner-images/issues/709#issuecomment-612569242
-        run: sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-
       - name: Show disk usage
         run: df -h
 
-      - name: Docker meta
-        id: docker_meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=sha
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-
-      - name: Login to GHCR
-        uses: docker/login-action@v2.1.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Show disk usage
-        run: df -h
-
-      - name: Build image
+      - name: Build image with fprime projects
         uses: docker/build-push-action@v5
         with:
-          tags: ${{ steps.docker_meta.outputs.tags }} 
-          file: ./Dockerfile
+          file: ./fprime-projects.Dockerfile
 
       - name: Show disk usage
         run: df -h
 
-      - name: Push image
-        uses: docker/build-push-action@v5
-        with:
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.docker_meta.outputs.tags }}
-          file: ./Dockerfile    
+      - name: Purge docker images from system to create space
+        run: docker rmi -f $(docker images -aq)
+
