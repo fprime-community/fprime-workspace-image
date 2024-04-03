@@ -14,6 +14,9 @@ changelog:
     - title: Maintenance
       labels:
         - maintenance
+    - title: DevOps
+      labels:
+        - DevOps
     - title: Documentation
       labels:
         - documentation
