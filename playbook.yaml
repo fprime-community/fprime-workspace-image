@@ -281,6 +281,13 @@
       chdir: /home/kasm-default-profile/fprime-workshop-led-blinker
       executable: /bin/bash
     become_user: 1000
+    register: checkout_fprime_workshop_led_blinker
+  - name: Display stdout of checkout
+    debug:
+      msg: "{{ checkout_fprime_workshop_led_blinker.stdout }}"
+  - name: Display stderr of checkout
+    debug:
+      msg: "{{ checkout_fprime_workshop_led_blinker.stderr }}"
   - name: Fetch fprime-workshop-led-blinker/fprime submodule
     shell:
       cmd: git fetch
