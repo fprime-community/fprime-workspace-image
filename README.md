@@ -6,8 +6,12 @@
 
 ## Introduction
 
-This repo provides the source code for building an Immutable-Infrastructure-as-Code (IIAC) workspace image, using Kasm, for the [F´(F Prime)](https://github.com/nasa/fprime) flight software and embedded systems framework, based on an Ansible template for [KASM Ubuntu Jammy](https://hub.docker.com/r/kasmweb/core-ubuntu-jammy) images.  The workspace is configured with the following software:
+This repo provides the source code for building an Immutable-Infrastructure-as-Code (IIAC) workspace image, using Kasm, for the [F´(F Prime)](https://github.com/nasa/fprime) flight software and embedded systems framework, based on an Ansible template for [KASM Ubuntu Jammy](https://hub.docker.com/r/kasmweb/core-ubuntu-jammy) images.  The workspace is configured with the following:
 
+- FPrime Community Projects
+  - [fprime-workshop-led-blinker](https://github.com/fprime-community/fprime-workshop-led-blinker)
+  - [fprime-tutorial-math-component](https://github.com/fprime-community/fprime-tutorial-math-component)
+  - [fprime-baremetal-reference](https://github.com/mdrs-community/fprime-baremetal-reference)
 - Cross Compile Toolchain for embedded Linux
   - gcc-arm-linux-gnueabihf
   - g++-arm-linux-gnueabihf
