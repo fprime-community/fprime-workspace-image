@@ -282,6 +282,7 @@
       executable: /bin/bash
     become_user: 1000
     register: checkout_fprime_workshop_led_blinker
+    ignore_errors: yes
   - name: Display stdout of checkout
     debug:
       msg: "{{ checkout_fprime_workshop_led_blinker.stdout }}"
