@@ -243,7 +243,7 @@
     fprime_led_blinker_version: "{{ fprime_version }}"
     fprime_math_component_version: "{{ fprime_version }}"
     fprime_arduino_version: "dbef42a1ea5bfab84930538cbb53fed90af77406"
-    fprime_baremetal_reference_version: "v3.4.0-0.1.1"
+    fprime_baremetal_reference_version: "{{ fprime_version }}-0.1.1"
 
   tasks:
   - name: Update OS to point python to python3
