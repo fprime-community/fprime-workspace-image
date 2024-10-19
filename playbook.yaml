@@ -161,6 +161,7 @@
     - install_doxygen
     - install_arduino_tools
     - build_led_blinker
+    - build_math_component
     - build_baremetal_reference
 
   vars:
@@ -217,6 +218,7 @@
     - install_cross_compile_toolchain
     - install_arduino_tools
     - build_led_blinker
+    - build_math_component
     - build_baremetal_reference
 
   tasks:
